@@ -170,6 +170,21 @@ body {
   -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
 }
 
+#etiqueta {
+	position: relative;
+	margin-top: 5%;
+	transition: transform .2s;
+}
+
+.bOpen {
+	position: relative;
+	margin-top: 20%;
+	text-align: center;
+}
+.bOpen:hover {
+	transform: scale(1.05);
+}
+
 #filtro {
 	text-align: center;
 	margin-bottom: 4%;
@@ -200,6 +215,65 @@ body {
 	margin: 0 auto;
 	right: 12%;
 	border-right: solid #5c4c4c;
+}
+
+
+.bBuy {
+	transition: transform .2s;
+}
+.bBuy:hover {
+	transform: scale(1.05);
+}
+.bClose {
+	position: fixed;
+	bottom: 40px;
+	left: 40px;
+	transition: all 300ms ease 0ms;
+	z-index: 99;
+	transition: transform .2s;
+}
+.bClose:hover {
+	transform: scale(1.05);
+}
+
+.atras {
+	position: fixed;
+	bottom: 40px;
+	left: 40px;
+	transition: all 300ms ease 0ms;
+	z-index: 99;
+	transition: transform .2s;
+}
+.atras:hover {
+	transform: scale(1.15);
+}
+
+.adelante {
+	position: fixed;
+	bottom: 40px;
+	right: 40px;
+	transition: all 300ms ease 0ms;
+	z-index: 99;
+	transition: transform .2s;
+}
+.adelante:hover {
+	transform: scale(1.15);
+}
+
+@media only screen and (max-width: 600px) {
+	.atras {
+	   font-size: 14px;
+	   padding: 12px 20px;
+	   bottom: 20px;
+	   right: 20px;
+   }
+
+   .adelante {
+		font-size: 14px;
+		padding: 12px 20px;
+		bottom: 20px;
+		right: 20px;
+	}
 }
 
 .product {
@@ -3160,32 +3234,32 @@ textarea.form-control-lg {
 
 .btn-primary {
   color: #fff;
-  background-color: #0d6efd;
-  border-color: #0d6efd;
+  background-color: #161616;
+  border-color: #161616;
 }
 .btn-primary:hover {
   color: #fff;
-  background-color: #0b5ed7;
-  border-color: #0a58ca;
+  background-color: #585858;
+  border-color: #666666;
 }
 .btn-check:focus + .btn-primary, .btn-primary:focus {
   color: #fff;
-  background-color: #0b5ed7;
-  border-color: #0a58ca;
-  box-shadow: 0 0 0 0.25rem rgba(49, 132, 253, 0.5);
+  background-color: #585858;
+  border-color: #666666;
+  box-shadow: 0 0 0 0.25rem rgb(177, 177, 177);
 }
 .btn-check:checked + .btn-primary, .btn-check:active + .btn-primary, .btn-primary:active, .btn-primary.active, .show > .btn-primary.dropdown-toggle {
   color: #fff;
-  background-color: #0a58ca;
-  border-color: #0a53be;
+  background-color: #585858;
+  border-color: #666666;
 }
 .btn-check:checked + .btn-primary:focus, .btn-check:active + .btn-primary:focus, .btn-primary:active:focus, .btn-primary.active:focus, .show > .btn-primary.dropdown-toggle:focus {
-  box-shadow: 0 0 0 0.25rem rgba(49, 132, 253, 0.5);
+  box-shadow: 0 0 0 0.25rem rgb(177, 177, 177);
 }
 .btn-primary:disabled, .btn-primary.disabled {
   color: #fff;
-  background-color: #0d6efd;
-  border-color: #0d6efd;
+  background-color: #161616;
+  border-color: #161616;
 }
 
 .btn-secondary {
@@ -3596,6 +3670,28 @@ textarea.form-control-lg {
 .btn-outline-dark:disabled, .btn-outline-dark.disabled {
   color: #212529;
   background-color: transparent;
+}
+
+.col.mb-5.stores {
+	transition: transform .2s;
+}
+.col.mb-5.stores:hover {
+	transform: scale(1.1);
+}
+
+.card.Movie {
+	border: 2px solid #75cc96;
+	background-color: #e9f9ef;
+}
+
+.card.Game {
+	border: 2px solid #e85b5b;
+	background-color: #f5d6d6;
+}
+
+.card.Book {
+	border: 2px solid #77a6d3;
+	background-color: #dfe9f3;
 }
 
 .btn-link {
