@@ -10,7 +10,7 @@ function productTest() {
 		console.log("Clase Abstracta: " + error.name);
 	}
 }
-productTest();
+//productTest();
 
 function movieTest() {
 	console.log("Testeo: Movie");
@@ -23,7 +23,7 @@ function movieTest() {
 	m1.title = "Sonic: The Hedgehog 2";
 	console.log(m1.toString());
 }
-movieTest();
+//movieTest();
 
 function gameTest() {
 	console.log("Testeo: Game");
@@ -43,7 +43,7 @@ function gameTest() {
 	g1.size = "16GB";
 	console.log(g1.toString());
 }
-gameTest();
+//gameTest();
 
 function bookTest() {
 	console.log("Testeo: Book");
@@ -62,7 +62,7 @@ function bookTest() {
 	b1.title = "Los juegos del hambre 2";
 	console.log(b1.toString());
 }
-bookTest();
+//bookTest();
 
 function coordsTest() {
 	console.log("Testeo: Coords");
@@ -77,7 +77,7 @@ function coordsTest() {
 		console.log(error.toString());
 	}
 }
-coordsTest();
+//coordsTest();
 
 function storeTest() {
 	console.log("Testeo: Store");
@@ -96,7 +96,7 @@ function storeTest() {
 	s1.name = "tiendaB";
 	console.log(s1.toString());
 }
-storeTest();
+//storeTest();
 
 function categoryTest() {
 	console.log("Testeo: Category");
@@ -111,7 +111,7 @@ function categoryTest() {
 		console.log(error.toString());
 	}
 }
-categoryTest();
+//categoryTest();
 
 function StoreHouseTest() {
 	console.log("Testeo: StoreHouse");
@@ -143,11 +143,8 @@ function StoreHouseTest() {
 	let cat3 = new Category("Libros", "eBooks");
 
 	// addCategory
-	console.log("Cantidad de categorías: " + sh.addCategory(cat0));
-	console.log("Cantidad de categorías: " + sh.addCategory(cat1));
-	console.log("Cantidad de categorías: " + sh.addCategory(cat2));
-	console.log("Cantidad de categorías: " + sh.addCategory(catX));
-	console.log("Cantidad de categorías: " + sh.addCategory(cat3));
+	console.log("Cantidad de categorías: " + sh.addCategory(cat0, cat1));
+	console.log("Cantidad de categorías: " + sh.addCategory(cat2, catX, cat3));
 	try {
 		console.log(sh.addCategory(cat3));
 	} catch (error) {
@@ -156,8 +153,8 @@ function StoreHouseTest() {
 	// removeCategory
 	console.log("Categoría eliminada, quedan: " + sh.removeCategory(catX));
 	// Iterador categories
-	for (let cat of sh.categories){
-		console.log('Categories - ' + cat.toString());
+	for (let [key, value] of sh.categories){
+		console.log('Categories - ' + value.toString());
 	}
 	// addProduct
 	console.log("Cantidad de productos: " + sh.addProduct(m1, cat1));
@@ -189,8 +186,8 @@ function StoreHouseTest() {
 		console.log(error.toString());
 	}
 	// Iterador shops
-	for (let shop of sh.shops){
-		console.log('Shops - ' + shop.toString());
+	for (let [key] of sh.stores){
+		console.log('Shops - ' + key.toString());
 	}
 	// removeShop
 	console.log("Tienda eliminada, quedan: " + sh.removeShop(s4));
@@ -260,16 +257,16 @@ function StoreHouseTest() {
 	// getShopProducts
 	console.log('Productos tienda - TiendaC -, tipo -  -');
 	for (let p of sh.getShopProducts(s3, '')){
-		console.log('Products - ' + p);
+		console.log('Products - ' + p.p);
 	}
 	console.log('Productos tienda - TiendaC -, tipo - Book -');
 	for (let p of sh.getShopProducts(s3, Book)){
-		console.log('Products - ' + p);
+		console.log('Products - ' + p.p);
 	}
 	try {
 		console.log('Productos tienda -  -, tipo -  -');
 		for (let p of sh.getShopProducts(null, '')){
-			console.log('Products - ' + p);
+			console.log('Products - ' + p.p);
 		}
 	} catch (error) {
 		console.log(error.toString());
