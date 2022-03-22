@@ -1,5 +1,24 @@
-//import * as StoreHouseTest from './storehouse/storehouseTest.js';
-import './storehouse/storehouseApp.js';
+import StoreHouseApp from './storehouse/storehouseApp.js';
+
+const historyActions = {
+	init: () => {
+		StoreHouseApp.handleInit();
+	},
+	productsStoreList: (event) => {
+		StoreHouseApp.handleProductsStoreList(event.state.store);
+	},
+	productsCategoryList: (event) => StoreHouseApp.handleProductsCategoryList(event.state.category),
+	showProduct: (event) => StoreHouseApp.handleShowProduct(event.state.serial)
+}
+
+window.addEventListener('popstate', function(event) {
+	if(event.state) {
+		historyActions[event.state.action](event);
+	}
+});
+console.log(history.state);
+
+history.replaceState({action: 'init'}, null);
 
 function showResultLayer(){
 	// Mostramos capa de ejemplos
@@ -13,4 +32,4 @@ function showResultLayer(){
 	$$result.clear();
 }
 
-showResultLayer();
+//showResultLayer();

@@ -1,3 +1,5 @@
+
+/*
 "use strict";
 
 function productTest() {
@@ -277,3 +279,4 @@ function StoreHouseTest() {
 	console.log("Tienda eliminada, quedan: " + sh.removeShop(s3));
 }
 StoreHouseTest();
+*/
