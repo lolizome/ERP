@@ -381,3 +381,4 @@ Object.defineProperty(Category.prototype, 'description', {enumerable: true});
 Object.defineProperty(Category.prototype, 'url', {enumerable: true});
 
 export {Product, Movie, Game, Book, Coords, Store, Category};
+
