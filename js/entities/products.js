@@ -8,12 +8,13 @@ class Product {
 	#tax;
 	#images;
 
-	constructor(serialNumber, name, description, price, tax, images) {
+	constructor(serialNumber, name, description, price, tax, images = "https://via.placeholder.com/450x300.jpg?text=SinNombre") {
 		if (!new.target) throw new InvalidAccessConstructorException();
 		if (new.target === Product) throw new AbstractClassException("Product");
 		if (!serialNumber) throw new EmptyValueException("serial");
 		if (!name) throw new EmptyValueException("name");
 		if (!price) throw new EmptyValueException("price");
+		if (!images) throw new EmptyValueException("images");
 
 		this.#serialNumber = serialNumber;
 		this.#name = name;
@@ -61,6 +62,8 @@ class Product {
 		return this.#images;
 	}
 	set images(images) {
+		if (!images) throw new EmptyValueException("images");
+
 		this.#images = images;
 	}
 
@@ -70,7 +73,7 @@ class Product {
 }
 Object.defineProperty(Product.prototype, "serialNumber", {enumerable: true});
 Object.defineProperty(Product.prototype, "name", {enumerable: true});
-Object.defineProperty(Product.prototype, "description", {enumerable: true, writable: true});
+Object.defineProperty(Product.prototype, "description", {enumerable: true});
 Object.defineProperty(Product.prototype, "price", {enumerable: true});
 Object.defineProperty(Product.prototype, "tax", {enumerable: true});
 Object.defineProperty(Product.prototype, "images", {enumerable: true});
@@ -218,7 +221,7 @@ class Book extends Product {
 	}
 
 	toString(){
-		return "Title: " + this.title + " Author: " + this.author;
+		return "Title: " + this.title + " Author: " + this.author + " Pages: " + this.pages + " Year: " + this.year;
 	}
 }
 Object.defineProperty(Book.prototype, "title", {enumerable: true});
@@ -334,19 +337,22 @@ Object.defineProperty(Store.prototype, "coords", {enumerable: true});
 class Category {
 	#title;
 	#description;
+	#url;
 
-	constructor(title, description) {
+	constructor(title = "Anon", description = "descripción base", url = 'https://via.placeholder.com/258x172.jpg?text=SinNombre') {
 		if (!new.target) throw new InvalidAccessConstructorException();
 		if (!title) throw new EmptyValueException('title');
+		if (!url) throw new EmptyValueException('url');
 
 		this.#title = title;
 		this.#description = description;
+		this.#url = url;
 	}
 
 	get title() {
 		return this.#title;
 	}
-	set title(title) {
+	set title(title = "Anon") {
 		if (!title) throw new EmptyValueException('title');
 
 		this.#title = title;
@@ -354,8 +360,16 @@ class Category {
 	get description() {
 		return this.#description;
 	}
-	set description(description) {
+	set description(description = "descripción base") {
 		this.#description = description;
+	}
+	get url() {
+		return this.#title;
+	}
+	set url(url = "Anon") {
+		if (!url) throw new EmptyValueException('url');
+
+		this.#url = url;
 	}
 
 	toString(){
@@ -364,3 +378,6 @@ class Category {
 }
 Object.defineProperty(Category.prototype, 'title', {enumerable: true});
 Object.defineProperty(Category.prototype, 'description', {enumerable: true});
+Object.defineProperty(Category.prototype, 'url', {enumerable: true});
+
+export {Product, Movie, Game, Book, Coords, Store, Category};
