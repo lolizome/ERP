@@ -19,9 +19,9 @@ class StoreHouseController {
 		let m3 = new Movie('111-111-113', 'mov3', 'Descripción del producto', 13, 21, './js/images/m3.jpg', 'Avatar', 'James Cameron', 2009);
 		let m4 = new Movie('111-111-114', 'mov4', 'Descripción del producto', 20, 21, './js/images/m4.jpg', 'Bratz', 'Sean McNamaran', 2007);
 		let m5 = new Movie('111-111-115', 'mov5', 'Descripción del producto', 4, 21, './js/images/m5.jpg', 'Death Note Netflix', 'Adam Wingard', 2017);
-		let g1 = new Game('222-222-221', 'gam1', 'Descripción del producto', 100, 21, './js/images/g1.jpeg', 'Uncharted: El tesoro de Drake', 'Sony', '2GB', 2007);
-		let g2 = new Game('222-222-222', 'gam2', 'Descripción del producto', 102, 21, './js/images/g2.jpg', ' Uncharted: El reino de los ladrones: ', 'Sony', '1GB', 2009);
-		let g3 = new Game('222-222-223', 'gam3', 'Descripción del producto', 103, 21, './js/images/g3.jpg', 'Uncharted: La traición de Drake', 'Sony', '900MB', 2013);
+		let g1 = new Game('222-222-221', 'gam1', 'Descripción del producto', 100, 21, './js/images/g1.jpeg', 'Uncharted 1', 'Sony', '2GB', 2007);
+		let g2 = new Game('222-222-222', 'gam2', 'Descripción del producto', 102, 21, './js/images/g2.jpg', ' Uncharted 2', 'Sony', '1GB', 2009);
+		let g3 = new Game('222-222-223', 'gam3', 'Descripción del producto', 103, 21, './js/images/g3.jpg', 'Uncharted 3', 'Sony', '900MB', 2013);
 		let g4 = new Game('222-222-224', 'gam4', 'Descripción del producto', 200, 21, './js/images/g4.jpg', 'World of Warcraft', 'Blizzard', '2GB', 2004);
 		let g5 = new Game('222-222-225', 'gam5', 'Descripción del producto', 40, 21, './js/images/g5.jpg', 'Stardew Valley', 'Eric Barone', '1GB', 2016);
 		let b1 = new Book('333-333-331', 'boo1', 'Descripción del producto', 20, 21, './js/images/g1.jpeg', 'Harry Potter 1', 'J K Rowling', 450, 1997);
@@ -121,13 +121,19 @@ class StoreHouseController {
 	handleProductsStoreList = (cif) => {
 		let store = this.#modelStoreHouse.getStore(cif);
 		this.#viewStoreHouse.listProducts(this.#modelStoreHouse.getShopProducts(store), store.name);
-		this.#viewStoreHouse.bindShowProduct(this.handleShowProduct);
+		//this.#viewStoreHouse.bindShowProduct(this.handleShowProduct);
+		this.#viewStoreHouse.bindShowProductInNewWindow(
+			this.handleShowProductInNewWindow
+		);
 	}
 
 	handleProductsCategoryList = (title) => {
 		let category = this.#modelStoreHouse.getCategory(title);
 		this.#viewStoreHouse.listProducts(this.#modelStoreHouse.getCategoryProducts(category), category.title);
-		this.#viewStoreHouse.bindShowProduct(this.handleShowProduct);
+		//this.#viewStoreHouse.bindShowProduct(this.handleShowProduct);
+		this.#viewStoreHouse.bindShowProductInNewWindow(
+			this.handleShowProductInNewWindow
+		);
 	}
 
 	/*handleProductsTypeList = (type) => {
@@ -146,11 +152,21 @@ class StoreHouseController {
 	}*/
 
 	handleShowProduct = (serialNumber) => {
+		console.log("s");
 		try {
 			let product = this.#modelStoreHouse.getProduct(serialNumber);
 			this.#viewStoreHouse.showProduct(product);
 		} catch (error){
 			this.#viewStoreHouse.showProduct(null, 'No existe este producto en la página.');
+		}
+	}
+
+	handleShowProductInNewWindow = (serialNumber) => {
+		try {
+			let product = this.#modelStoreHouse.getProduct(serialNumber);
+			this.#viewStoreHouse.showProductInNewWindow(product);
+		} catch (error){
+			this.#viewStoreHouse.showProductInNewWindow(null, 'No existe este producto en la página.');
 		}
 	}
 }

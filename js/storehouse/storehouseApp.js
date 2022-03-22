@@ -12,8 +12,8 @@ import {StoreHouseException, ObjecStoreHouseException} from './storehouseModel.j
 import StoreHouseController from './storehouseController.js';
 import StoreHouseView from './storehouseView.js';
 
-$(function () {
-	const StoreHouseApp = new StoreHouseController(
-		StoreHouse.getInstance(), new StoreHouseView()
-	);
-});
+const StoreHouseApp = new StoreHouseController(
+	StoreHouse.getInstance(), new StoreHouseView()
+);
+
+export default StoreHouseApp;
