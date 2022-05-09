@@ -1,5 +1,9 @@
 import StoreHouseApp from './storehouse/storehouseApp.js';
 
+$(function () {
+	history.replaceState({action: 'init'}, null);
+});
+
 const historyActions = {
 	init: () => {
 		StoreHouseApp.handleInit();
@@ -7,8 +11,8 @@ const historyActions = {
 	productsStoreList: (event) => {
 		StoreHouseApp.handleProductsStoreList(event.state.store);
 	},
-	productsCategoryList: (event) => StoreHouseApp.handleProductsCategoryList(event.state.category),
-	showProduct: (event) => StoreHouseApp.handleShowProduct(event.state.serial)
+	productsCategoryList: (event) => StoreHouseApp.handleProductsCategoryList(event.state.category)
+	//showProduct: (event) => StoreHouseApp.handleShowProduct(event.state.serial)
 }
 
 window.addEventListener('popstate', function(event) {
@@ -16,9 +20,6 @@ window.addEventListener('popstate', function(event) {
 		historyActions[event.state.action](event);
 	}
 });
-console.log(history.state);
-
-history.replaceState({action: 'init'}, null);
 
 function showResultLayer(){
 	// Mostramos capa de ejemplos

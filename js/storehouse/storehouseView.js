@@ -1,7 +1,7 @@
 import StoreHouse from './storehouseModel.js';
 
 class StoreHouseView {
-	#excecuteHandler(handler, handlerArguments, scrollElement, data, url, event) {
+	#executeHandler(handler, handlerArguments, scrollElement, data, url, event) {
 		handler(...handlerArguments);
 		$(scrollElement).get(0).scrollIntoView();
 		history.pushState(data, null, url);
@@ -18,10 +18,10 @@ class StoreHouseView {
 
 	bindInit(handler) {
 		$('#init').click((event) => {
-			this.#excecuteHandler(handler, [], 'body', {action: 'init'}, '#', event);
+			this.#executeHandler(handler, [], 'body', {action: 'init'}, '#', event);
 		});
 		$('#logo').click((event) => {
-			this.#excecuteHandler(handler, [], 'body', {action: 'init'}, '#', event);
+			this.#executeHandler(handler, [], 'body', {action: 'init'}, '#', event);
 		});
 	}
 
@@ -59,7 +59,7 @@ class StoreHouseView {
 		});
 		bBack.after(bForward);
 	}
-
+/*
 	showProduct(product, message){
 		this.main.empty();
 		if (this.categories.children().length > 1) this.categories.children()[1].remove();
@@ -120,7 +120,7 @@ class StoreHouseView {
 		$('#Game').css({'border': '2px solid #e85b5b', 'background-color': '#f5d6d6'});
 		$('#Book').css({'border': '2px solid #77a6d3', 'background-color': '#dfe9f3'});
 	}
-
+*/
 	showProductInNewWindow(product, message){
 		let main = $(this.productWindow[this.productWindow.length - 1].document).find('main');
 		let header = $(this.productWindow[this.productWindow.length - 1].document).find('header nav');
@@ -270,53 +270,55 @@ class StoreHouseView {
 	}
 
 	/*
-		#excecuteHandler(handler, handlerArguments, scrollElement, data, url, event) {
+		#executeHandler(handler, handlerArguments, scrollElement, data, url, event) {
 		handler(...handlerArguments);
 		$(scrollElement).get(0).scrollIntoView();
 		history.pushState(data, null, url);
 		event.preventDefault();
 	}
 
+	this.#executeHandler(handler, [], 'body', {action: 'init'}, '#', event);
+
 	handler, [], 'body', {action: 'init'}, '#', event
 	*/
 
 	bindProductsStoreList(handler){
-		$('#store-list').find('a').click(function(event){
-			/*let store = $(event.target).closest($('a')).get(0).dataset.store;
-			this.#excecuteHandler(
+		$('#store-list').find('a').click((event) => {
+			let store = $(event.target).closest($('a')).get(0).dataset.store;
+			this.#executeHandler(
 				handler, [store],
 				'#product-list',
 				{action: 'productsStoreList', store: store},
 				'#store-list', event
-			);*/
-			handler(this.dataset.store);
+			);
+			//handler(this.dataset.store);
 		});
 	}
 
 	bindProductsStoreListInMenu(handler) {
-		$('#navStos').next().children().click(function(event){
-			/*let store = $(event.target).closest($('a')).get(0).dataset.store;
-			this.#excecuteHandler(
+		$('#navStos').next().children().click((event) => {
+			let store = $(event.target).closest($('a')).get(0).dataset.store;
+			this.#executeHandler(
 				handler, [store],
 				'#product-list',
 				{action: 'productsStoreList', store: store},
 				'#store-list', event
-			);*/
-			handler(this.dataset.store);
+			);
+			//handler(this.dataset.store);
 		});
 	}
 
 
 	bindProductsCategoryListInMenu(handler) {
-		$('#navCats').next().children().click(function(event){
-			/*let category = $(event.target).closest($('a')).get(0).dataset.category;
-			this.#excecuteHandler(
+		$('#navCats').next().children().click((event) => {
+			let category = $(event.target).closest($('a')).get(0).dataset.category;
+			this.#executeHandler(
 				handler, [category],
 				'#product-list',
 				{action: 'productsCategoryList', category: category},
 				'#category-list', event
-			);*/
-			handler(this.dataset.category);
+			);
+			//handler(this.dataset.category);
 		});
 	}
 
@@ -325,12 +327,12 @@ class StoreHouseView {
 		$('#store-list').find('a').click(function(event){
 			handler(this.dataset.type);
 		});
-	}*/
+	}
 
 	bindShowProduct(handler){
 		$('#product-list').find('a.img-wrap').click(function(event){
 			let serial = $(event.target).closest($('a')).get(0).dataset.serial;
-			this.#excecuteHandler(
+			this.#executeHandler(
 				handler, [serial],
 				'#single-product',
 				{action: 'showProduct', serial: serial},
@@ -338,14 +340,14 @@ class StoreHouseView {
 			);
 		});
 		$('#product-list').find('figcaption a').click(function(event){
-			this.#excecuteHandler(
+			this.#executeHandler(
 				handler, [event.target.dataset.serial],
 				'#single-product',
 				{action: 'showProduct', serial: event.target.dataset.serial},
 				'#product-list', event
 			);
 		});
-	}
+	}*/
 
 	bindShowProductInNewWindow(handler){
 		$('.bOpen').click((event) => {
