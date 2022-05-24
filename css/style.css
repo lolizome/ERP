@@ -243,6 +243,7 @@ body {
 
 .bBuy {
 	transition: transform .2s;
+	margin-top: 0.4rem;
 }
 .bBuy:hover {
 	transform: scale(1.05);

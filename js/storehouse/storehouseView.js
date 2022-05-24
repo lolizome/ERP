@@ -20,6 +20,7 @@ class StoreHouseView {
 		this.stores = $('#stores');
 		this.categories = $('#categories');
 		this.menu = $('.navbar-nav');
+		this.bRemove = $('#bDelete');
 	}
 
 	bindInit(handler) {
@@ -67,6 +68,7 @@ class StoreHouseView {
 		});
 		bBack.after(bForward);
 	}
+
 /*
 	showProduct(product, message){
 		this.main.empty();
@@ -916,8 +918,8 @@ class StoreHouseView {
 								<span class="price p">Precio - ${product.price.toLocaleString('es-ES', { style: 'currency', currency: 'EUR' })}</span><br>
 								<div class="bottom-wrap">
 									<div class="cart mt-4 align-items-center">
-										<button data-serial="${product.serialNumber}" class="bBuy btn btn-primary float-right mr-2 px-4"> Comprar </button>
 										<button data-serial="${product.serialNumber}" class="bOpen btn btn-primary float-right mr-2 px-4"> Información </button>
+										<button data-serial="${product.serialNumber}" id="bDelete" class="bBuy btn btn-primary float-right mr-2 px-4"> Eliminar </button>
 									</div>
 								</div>
 							</div>
@@ -1002,7 +1004,7 @@ class StoreHouseView {
 			);
 		});
 	}*/
-	// 6.2. Página 10
+
 	bindShowProductInNewWindow(handler){
 		$('.bOpen').click((event) => {
 			let tam = this.productWindow.length;
