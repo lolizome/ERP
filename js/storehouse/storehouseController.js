@@ -91,6 +91,15 @@ class StoreHouseController {
 		this.#loadStoreHouseObjects();
 		this.onAddStore();
 		this.onAddCategory();
+		this.#viewStoreHouse.showAdminInMenu();
+		this.#viewStoreHouse.bindAdminMenu(
+			this.handleNewProductForm,
+			this.handleRemoveProductForm,
+			this.handleNewCategoryForm,
+			this.handleRemoveCategoryForm,
+			this.handleNewStoreForm,
+			this.handleRemoveStoreForm
+		);
 	}
 
 	onInit = () => {
@@ -152,7 +161,6 @@ class StoreHouseController {
 	}*/
 
 	handleShowProduct = (serialNumber) => {
-		console.log("s");
 		try {
 			let product = this.#modelStoreHouse.getProduct(serialNumber);
 			this.#viewStoreHouse.showProduct(product);
@@ -168,6 +176,124 @@ class StoreHouseController {
 		} catch (error){
 			this.#viewStoreHouse.showProductInNewWindow(null, 'No existe este producto en la página.');
 		}
+	}
+
+	handleNewProductForm = () => {
+		this.#viewStoreHouse.showNewProductForm();
+		this.#viewStoreHouse.bindNewProductForm(this.handleCreateProduct);
+	}
+
+	handleNewCategoryForm = () => {
+		this.#viewStoreHouse.showNewCategoryForm();
+		this.#viewStoreHouse.bindNewCategoryForm(this.handleCreateCategory);
+	}
+
+	handleNewStoreForm = () => {
+		this.#viewStoreHouse.showNewStoreForm();
+		this.#viewStoreHouse.bindNewStoreForm(this.handleCreateStore);
+	}
+
+	handleCreateProduct = (serialNumber, name, description, price, tax) => {
+		let pro = new Product(serialNumber, name, description, price, tax);
+		let done, error;
+
+		try{
+			this.#modelStoreHouse.addProduct(pro);
+			done = true;
+		} catch(exception) {
+			done = false;
+			error = exception;
+		}
+
+		this.#viewStoreHouse.showNewProductModal(done, pro, error);
+	}
+
+	handleCreateCategory = (title, url, desc) => {
+		let cat = new Category(title, url);
+		cat.description = desc;
+		let done, error;
+
+		try{
+			this.#modelStoreHouse.addCategory(cat);
+			done = true;
+			this.onAddCategory();
+		} catch(exception) {
+			done = false;
+			error = exception;
+		}
+		this.#viewStoreHouse.showNewCategoryModal(done, cat, error);
+	}
+
+	handleCreateStore = (cif, name, address, phone, coords) => {
+		let sto = new Store(cif, name, address, phone, coords);
+		let done, error;
+
+		try{
+			this.#modelStoreHouse.addShop(sto);
+			done = true;
+			this.onAddStore();
+		} catch(exception) {
+			done = false;
+			error = exception;
+		}
+
+		this.#viewStoreHouse.showNewStoreModal(done, sto, error);
+	}
+
+	handleRemoveProductForm = () => {
+		this.#viewStoreHouse.showRemoveProductForm(this.#modelStoreHouse.products);
+		this.#viewStoreHouse.bindRemoveProductForm(this.handleRemoveProduct);
+	}
+
+	handleRemoveProduct = (title, position) => {
+		let done, error, cat;
+		try{
+			cat = this.#modelStoreHouse.getCategory(title);
+			this.#modelStoreHouse.removeCategory(cat);
+			done = true;
+		} catch(exception){
+			done = false;
+			error = exception;
+		}
+		this.#viewStoreHouse.showRemoveProductModal(done, cat, position, error);
+	}
+
+	handleRemoveCategoryForm = () => {
+		this.#viewStoreHouse.showRemoveCategoryForm(this.#modelStoreHouse.categories);
+		this.#viewStoreHouse.bindRemoveCategoryForm(this.handleRemoveCategory);
+	}
+
+	handleRemoveCategory = (title, position) => {
+		let done, error, cat;
+		try{
+			cat = this.#modelStoreHouse.getCategory(title);
+			this.#modelStoreHouse.removeCategory(cat);
+			done = true;
+			this.onAddCategory();
+		} catch(exception){
+			done = false;
+			error = exception;
+		}
+		this.#viewStoreHouse.showRemoveCategoryModal(done, cat, position, error);
+	}
+
+	handleRemoveStoreForm = () => {
+		this.#viewStoreHouse.showRemoveStoreForm(this.#modelStoreHouse.stores);
+		this.#viewStoreHouse.bindRemoveStoreForm(this.handleRemoveStore);
+	}
+
+	handleRemoveStore = (cif, position) => {
+		let done, error, sto;
+		try{
+			sto = this.#modelStoreHouse.getStore(cif);
+			this.#modelStoreHouse.removeShop(sto);
+			done = true;
+			this.onAddStore();
+		} catch(exception){
+			done = false;
+			error = exception;
+		}
+		this.#viewStoreHouse.showRemoveStoreModal(done, sto, position, error);
 	}
 }
 

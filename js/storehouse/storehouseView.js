@@ -1,6 +1,12 @@
 import StoreHouse from './storehouseModel.js';
+import {
+	newProductValidation,
+	newCategoryValidation,
+	newStoreValidation
+} from '../validation.js';
 
 class StoreHouseView {
+	// scrollElement -> punto donde se sitúa la vista en la página
 	#executeHandler(handler, handlerArguments, scrollElement, data, url, event) {
 		handler(...handlerArguments);
 		$(scrollElement).get(0).scrollIntoView();
@@ -25,6 +31,7 @@ class StoreHouseView {
 		});
 	}
 
+	// Muestra las tiendas existentes
 	showStores(stores) {
 		this.main.empty();
 		if (this.stores.children().children().length > 1) this.stores.children().remove();
@@ -48,7 +55,8 @@ class StoreHouseView {
 		}
 		this.stores.append(container);
 
-		let bBack = $('<button class="btn btn-primary m-1 atras">Atrás</button>');
+	// Botones de atrás y adelante del historial de la página
+	let bBack = $('<button class="btn btn-primary m-1 atras">Atrás</button>');
 		bBack.click(function (event){
 			window.history.back();
 		});
@@ -121,6 +129,8 @@ class StoreHouseView {
 		$('#Book').css({'border': '2px solid #77a6d3', 'background-color': '#dfe9f3'});
 	}
 */
+
+	// Muestra un productp en una nueva ventana
 	showProductInNewWindow(product, message){
 		let main = $(this.productWindow[this.productWindow.length - 1].document).find('main');
 		let header = $(this.productWindow[this.productWindow.length - 1].document).find('header nav');
@@ -200,22 +210,60 @@ class StoreHouseView {
 		return $('<div>Características de libro.</div>');
 	}
 
+	// Muestra las tiendas existentes en el menú
 	showStoresInMenu(stores) {
-		let li = $(`<li class="nav-item dropdown">
-			<a id="navStos" class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-				Tiendas
-			</a>
-		</li>`);
-		let container = $('<div class="dropdown-menu" aria-labelledby="navStos"></div>');
-		//container.append(`<li><a class="dropdown-item" href="#!">Todas las Tiendas</a></li><li><hr class="dropdown-divider" /></li>`);
+		let link = $('#navStos');
+		let container;
+		let li;
+
+		if(link.length === 1) {
+			container = link.next();
+			container.children().remove();
+			link.parent().append(container);
+		} else {
+			li = $(`<li class="nav-item dropdown">
+				<a id="navStos" class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+					Tiendas
+				</a>
+			</li>`);
+			container = $('<div class="dropdown-menu" aria-labelledby="navStos"></div>');
+			//container.append(`<li><a class="dropdown-item" href="#!">Todas las Tiendas</a></li><li><hr class="dropdown-divider" /></li>`);
+			li.append(container);
+			this.menu.append(li);
+		}
+
 		for (let [key] of stores) {
 			container.append(`<a data-store="${key.cif}" class="dropdown-item" href="#product-list">${key.name}</a>`);
 		}
-		li.append(container);
-		this.menu.append(li);
 	}
 
+	// Muestra las categorías existentes en el menú
 	showCategoriesInMenu(categories) {
+		let link = $('#navCats');
+		let container;
+		let li;
+
+		if(link.length === 1) {
+			container = link.next();
+			container.children().remove();
+			link.parent().append(container);
+		} else {
+			li = $(`<li class="nav-item dropdown">
+				<a id="navCats" class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+					Categorías
+				</a>
+			</li>`);
+			container = $('<div id="category-list" class="dropdown-menu" aria-labelledby="navCats"></div>');
+			//container.append(`<li><a data-category="Cattodos" class="dropdown-item" href="#productlist">Todas las Categorías</a></li><li><hr class="dropdown-divider" /></li>`);
+
+			li.append(container);
+			this.menu.append(li);
+		}
+
+		for (let [key, value] of categories) {
+			container.append(`<a data-category="${value.title}" class="dropdown-item" href="#product-list">${value.title}</a>`);
+		}
+		/*
 		let li = $(`<li class="nav-item dropdown">
 			<a id="navCats" class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
 				Categorías
@@ -226,8 +274,589 @@ class StoreHouseView {
 		for (let [key, value] of categories) {
 			container.append(`<a data-category="${value.title}" class="dropdown-item" href="#product-list">${value.title}</a>`);
 		}
+		*/
+	}
+
+	// Muestra la gestión de productos, categorías y tiendas en el menú
+	showAdminInMenu() {
+		let li = $(`<li class="nav-item dropdown">
+		<a id="navAdmin" class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+			Gestiones
+		</a>
+		</li>`);
+		let container = $(`<div class="dropdown-menu" aria-labelledby="navAdmin">
+			<a id="lnewProduct" class="dropdown-item" href="#new-product">Crear Producto</a>
+			<a id="ldelProduct" class="dropdown-item" href="#del-product">Eliminar Producto</a>
+			<a id="lnewCategory" class="dropdown-item" href="#new-category">Crear Categoría</a>
+			<a id="ldelCategory" class="dropdown-item" href="#del-category">Eliminar Categoría</a>
+			<a id="lnewStore" class="dropdown-item" href="#new-store">Crear Tienda</a>
+			<a id="ldelStore" class="dropdown-item" href="#del-store">Eliminar Tienda</a>
+		</div>`);
 		li.append(container);
 		this.menu.append(li);
+	}
+
+	// Formulario de creación de productos
+	showNewProductForm() {
+		this.main.empty();
+		if(this.stores.children().length > 1) this.stores.children()[1].remove();
+
+		let container = $(`
+		<div id="new-store" class="container my-3">
+			<h1 class="display-5">Nueva Tienda</h1>
+			<form class="form" name="fNewStore" role="form" novalidate>
+					<div class="col-md-6 mb-3">
+						<label for="ncCif">Cif *</label>
+						<div class="input-group">
+							<div class="input-group-prepend">
+								<span class="input-group-text" id="cifPrepend">
+									<i class="fas fa-heading"></i>
+								</span>
+							</div>
+							<input type="text" class="form-control" id="ncCif" name="ncCif" placeholder="Cif de Tienda" aria-describedby="cifPrepend" value="" required>
+							<div class="invalid-feedback">El cif es obligatorio.</div>
+							<div class="valid-feedback">Correcto.</div> </div>
+						</div>
+					<div class="col-md-6 mb-3">
+
+						<label for="ncName">Nombre *</label>
+						<div class="input-group">
+							<div class="input-group-prepend">
+								<span class="input-group-text" id="namePrepend">
+									<i class="fas fa-heading"></i>
+								</span>
+							</div>
+							<input type="text" class="form-control" id="ncName" name="ncName" placeholder="Nombre de Tienda" aria-describedby="namePrepend" value="" required>
+							<div class="invalid-feedback">El nombre es obligatorio.</div>
+							<div class="valid-feedback">Correcto.</div> </div>
+						</div>
+					<div class="col-md-6 mb-3">
+						<label for="ncAddress">Dirección</label>
+						<div class="input-group">
+							<div class="input-group-prepend">
+								<span class="input-group-text" id="adrPrepend">
+									<i class="fas fa-align-left"></i>
+								</span>
+							</div>
+							<input type="text" class="form-control" id="ncAddress" name="ncAddress"aria-describedby="adrPrepend" value="" required>
+							<div class="invalid-feedback"></div>
+							<div class="valid-feedback">Correcto.</div>
+						</div>
+					</div>
+					<div class="col-md-6 mb-3">
+						<label for="ncPhone">Teléfono *</label>
+						<div class="input-group">
+							<div class="input-group-prepend">
+								<span class="input-group-text" id="phonePrepend">
+									<i class="fas fa-image"></i>
+								</span>
+							</div>
+							<input type="number" class="form-control" id="ncPhone" name="ncPhone" placeholder="" aria-describedby="phonePrepend" value="" required>
+							<div class="invalid-feedback">El teléfono no es válido.</div>
+							<div class="valid-feedback">Correcto.</div>
+						</div>
+					</div>
+					<label for="ncCoords">Coordenadas</label>
+					<div class="input-group">
+						<div class="input-group-prepend">
+							<span class="input-group-text" id="coordsPrepend">
+								<i class="fas fa-align-left"></i>
+							</span>
+						</div>
+						<input type="text" class="form-control" id="ncCoords" name="ncCoords"aria-describedby="coordsPrepend" value="" required>
+						<div class="invalid-feedback"></div>
+						<div class="valid-feedback">Correcto.</div>
+					</div>
+				</div>
+				<div>
+					<button id="btnEnviar" class="btn btn-primary" type="submit">Enviar</button>
+					<button class="btn btn-primary" type="reset">Cancelar</button>
+				</div>
+			</form>
+		</div>`);
+		this.main.append(container);
+	}
+
+	// Modal de creación de productos
+	showNewProductModal(done, pro, error) {
+		$(document.fNewCategory).find('div.error').remove();
+		if(done) {
+			let modal = $(`
+				<div class="modal fade" id="newCategoryModal" tabindex="-1" data-backdrop="static" data-keyboard="false" role="dialog" aria-labelledby="newCategoryModalLabel" aria-hidden="true">
+					<div class="modal-dialog" role="document">
+						<div class="modal-content">
+							<div class="modal-header">
+								<h5 class="modal-title" id="newCategoryModalLabel">Categoría creada</h5>
+								<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+									<span aria-hidden="true">&times;</span>
+								</button>
+							</div>
+							<div class="modal-body"> La categoría <strong>${cat.title}</strong> ha sido creada correctamente. </div>
+							<div class="modal-footer">
+								<button type="button" class="btn btn-primary" data-dismiss="modal">Aceptar</button>
+							</div>
+						</div>
+					</div>
+				</div>
+			`);
+
+			$('body').append(modal);
+			let newCategoryModal = $('#newCategoryModal');
+			newCategoryModal.modal('show');
+			newCategoryModal.find('button').click(() => {
+				newCategoryModal.on('hidden.bs.modal', function (event) {
+					document.fNewCategory.reset();
+					document.fNewCategory.ncTitle.focus();
+					this.remove();
+				});
+				newCategoryModal.modal('hide');
+			})
+		} else {
+			$(document.fNewCategory).prepend(`
+				<div class="error text-danger p-3">
+					<i class="fas fa-exclamation-triangle"></i> La categoría <strong>${cat.title}</strong> ya está creada.
+				</div>
+			`);
+		}
+	}
+
+	// Formulario de eliminación de productos
+	showRemoveProductForm() {
+		this.main.empty();
+		if (this.categories.children().length > 1)
+			this.categories.children()[1].remove();
+		let container = $(`<div id="remove-category" class="container my-3">
+			<h1 class="display-5">Eliminar una categoría categoría</h1>
+			<div id="category-list" class="row"></div>
+			</div>`);
+
+		for (let category of categories){
+			container.children().nextAll('div').append(`<div class="cat col-lg-3 col-md-6"><a data-category="${category.title}" href="#product-list">
+					<div class="cat-list-image"><img alt="${category.title}" src="${category.url}" />
+					</div>
+					<div class="cat-list-text">
+						<h3>${category.title}</h3>
+						<div><button class="btn btn-primary" data-category="${category.title}" type='button'>Eliminar</button></div>
+					</div>
+				</a>
+			</div>`);
+		}
+		this.categories.append(container);
+		this.main.append(container);
+	}
+
+	// Modal de eliminación de productos
+	showRemoveProductModal(done, cat, position, error) {
+		$('remove-category').find('div.error').remove();
+		if (done){
+			let modal = $(`<div class="modal fade" id="removeCategoryModal" tabindex="-1"
+				data-backdrop="static" data-keyboard="false" role="dialog" aria-labelledby="removeCategoryModalLabel" aria-hidden="true">
+				<div class="modal-dialog" role="document">
+					<div class="modal-content">
+						<div class="modal-header">
+							<h5 class="modal-title" id="removeCategoryModalLabel">Categoría eliminada</h5>
+							<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+								<span aria-hidden="true">&times;</span>
+							</button>
+						</div>
+						<div class="modal-body">
+							La categoría <strong>${cat.title}</strong> ha sido eliminada correctamente.
+						</div>
+						<div class="modal-footer">
+							<button type="button" class="btn btn-primary" data-dismiss="modal">Aceptar</button>
+						</div>
+					</div>
+				</div>
+			</div>`);
+			$('body').append(modal);
+			let removeCategoryModal = $('#removeCategoryModal');
+				removeCategoryModal.modal('show');
+				removeCategoryModal.find('button').click(() => {
+					removeCategoryModal.on('hidden.bs.modal', function (event) {
+						this.remove();
+				});
+				removeCategoryModal.modal('hide');
+				let divCat = $('#remove-category').find(`div > div:nth-child(${position + 1})`);
+				divCat.remove();
+			})
+		} else {
+			$('#removeCategoryModal').prepend(`
+				<div class="error text-danger p-3">
+					<i class="fas fa-exclamation-triangle"></i> La categoría <strong>${cat.title}</strong> no exite en el almacén.
+				</div>
+			`);
+		}
+	}
+
+	bindRemoveProductForm(handler){
+		$('#remove-product').find('button').click(function (event){
+			handler(this.dataset.product, $(this).closest('div.pro').index());
+		})
+	}
+
+	// Formulario de creación de categorías
+	showNewCategoryForm() {
+		this.main.empty();
+		if(this.categories.children().length > 1) this.categories.children()[1].remove();
+
+		let container = $(`
+		<div id="new-category" class="container my-3">
+			<h1 class="display-5">Nueva categoría</h1>
+			<form class="form" name="fNewCategory" role="form" novalidate>
+					<div class="col-md-6 mb-3">
+						<label for="ncTitle">Título *</label>
+						<div class="input-group">
+							<div class="input-group-prepend">
+								<span class="input-group-text" id="titlePrepend">
+									<i class="fas fa-heading"></i>
+								</span>
+							</div>
+							<input type="text" class="form-control" id="ncTitle" name="ncTitle" placeholder="Título de categoría" aria-describedby="titlePrepend" value="" required>
+							<div class="invalid-feedback">El título es obligatorio.</div>
+							<div class="valid-feedback">Correcto.</div> </div>
+						</div>
+					<div class="col-md-6 mb-3">
+						<label for="ncDescription">Descripción</label>
+						<div class="input-group">
+							<div class="input-group-prepend">
+								<span class="input-group-text" id="descPrepend">
+									<i class="fas fa-align-left"></i>
+								</span>
+							</div>
+							<input type="text" class="form-control" id="ncDescription" name="ncDescription"aria-describedby="descPrepend" value="" required>
+							<div class="invalid-feedback"></div>
+							<div class="valid-feedback">Correcto.</div>
+						</div>
+					</div>
+					<div class="col-md-6 mb-3">
+						<label for="ncUrl">URL *</label>
+						<div class="input-group">
+							<div class="input-group-prepend">
+								<span class="input-group-text" id="urlPrepend">
+									<i class="fas fa-image"></i>
+								</span>
+							</div>
+							<input type="url" class="form-control" id="ncUrl" name="ncUrl" placeholder="http://www.test.es" aria-describedby="urlPrepend" value="" required>
+							<div class="invalid-feedback">La URL no es válida.</div>
+							<div class="valid-feedback">Correcto.</div>
+						</div>
+					</div>
+				<div>
+					<button id="btnEnviar" class="btn btn-primary" type="submit">Enviar</button>
+					<button class="btn btn-primary" type="reset">Cancelar</button>
+				</div>
+			</form>
+		</div>`);
+		this.main.append(container);
+	}
+
+	// Modal de creación de categorías
+	showNewCategoryModal(done, cat, error) {
+		$(document.fNewCategory).find('div.error').remove();
+		if(done) {
+			let modal = $(`
+				<div class="modal fade" id="newCategoryModal" tabindex="-1" data-backdrop="static" data-keyboard="false" role="dialog" aria-labelledby="newCategoryModalLabel" aria-hidden="true">
+					<div class="modal-dialog" role="document">
+						<div class="modal-content">
+							<div class="modal-header">
+								<h5 class="modal-title" id="newCategoryModalLabel">Categoría creada</h5>
+								<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+									<span aria-hidden="true">&times;</span>
+								</button>
+							</div>
+							<div class="modal-body"> La categoría <strong>${cat.title}</strong> ha sido creada correctamente. </div>
+							<div class="modal-footer">
+								<button type="button" class="btn btn-primary" data-dismiss="modal">Aceptar</button>
+							</div>
+						</div>
+					</div>
+				</div>
+			`);
+
+			$('body').append(modal);
+			let newCategoryModal = $('#newCategoryModal');
+			newCategoryModal.modal('show');
+			newCategoryModal.find('button').click(() => {
+				newCategoryModal.on('hidden.bs.modal', function (event) {
+					document.fNewCategory.reset();
+					document.fNewCategory.ncTitle.focus();
+					this.remove();
+				});
+				newCategoryModal.modal('hide');
+			})
+		} else {
+			$(document.fNewCategory).prepend(`
+				<div class="error text-danger p-3">
+					<i class="fas fa-exclamation-triangle"></i> La categoría <strong>${cat.title}</strong> ya está creada.
+				</div>
+			`);
+		}
+	}
+
+	// Formulario de eliminación de categorías
+	showRemoveCategoryForm(categories) {
+		this.main.empty();
+
+		if (this.categories.children().length > 1)
+			this.categories.children()[1].remove();
+		let container = $(`<div id="remove-category" class="container my-3">
+			<h1 class="display-5">Eliminar una categoría</h1>
+			<div id="category-list" class="row"></div>
+			</div>`);
+
+		for (let [key, value] of categories){
+			container.children().nextAll('div').append(`<div class="cat col-lg-3 col-md-6">
+				<div class="cat-list-text">
+					<h3>${value.title}</h3>
+					<div><button class="btn btn-primary" data-category="${value.title}" type='button'>Eliminar</button></div>
+				</div>
+			</div>`);
+		}
+		this.categories.append(container);
+		this.main.append(container);
+	}
+
+	// Modal de eliminación de categorias
+	showRemoveCategoryModal(done, cat, position, error) {
+		$('remove-category').find('div.error').remove();
+		if (done){
+			let modal = $(`<div class="modal fade" id="removeCategoryModal" tabindex="-1"
+				data-backdrop="static" data-keyboard="false" role="dialog" aria-labelledby="removeCategoryModalLabel" aria-hidden="true">
+				<div class="modal-dialog" role="document">
+					<div class="modal-content">
+						<div class="modal-header">
+							<h5 class="modal-title" id="removeCategoryModalLabel">Categoría eliminada</h5>
+							<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+								<span aria-hidden="true">&times;</span>
+							</button>
+						</div>
+						<div class="modal-body">
+							La categoría <strong>${cat.title}</strong> ha sido eliminada correctamente.
+						</div>
+						<div class="modal-footer">
+							<button type="button" class="btn btn-primary" data-dismiss="modal">Aceptar</button>
+						</div>
+					</div>
+				</div>
+			</div>`);
+			$('body').append(modal);
+			let removeCategoryModal = $('#removeCategoryModal');
+				removeCategoryModal.modal('show');
+				removeCategoryModal.find('button').click(() => {
+					removeCategoryModal.on('hidden.bs.modal', function (event) {
+						this.remove();
+				});
+				removeCategoryModal.modal('hide');
+				let divCat = $('#remove-category').find(`div > div:nth-child(${position + 1})`);
+				divCat.remove();
+			})
+		} else {
+			$('#removeCategoryModal').prepend(`
+				<div class="error text-danger p-3">
+					<i class="fas fa-exclamation-triangle"></i> La categoría <strong>${cat.title}</strong> no exite en el almacén.
+				</div>
+			`);
+		}
+	}
+
+	bindRemoveCategoryForm(handler){
+		$('#remove-category').find('button').click(function (event){
+			handler(this.dataset.category, $(this).closest('div.cat').index());
+		})
+	}
+
+	// Formulario de creación de tiendas
+	showNewStoreForm() {
+		this.main.empty();
+		if(this.stores.children().length > 1) this.stores.children()[1].remove();
+
+		let container = $(`
+		<div id="new-store" class="container my-3">
+			<h1 class="display-5">Nueva Tienda</h1>
+			<form class="form" name="fNewStore" role="form" novalidate>
+					<div class="col-md-6 mb-3">
+						<label for="ncCif">Cif *</label>
+						<div class="input-group">
+							<div class="input-group-prepend">
+								<span class="input-group-text" id="cifPrepend">
+									<i class="fas fa-heading"></i>
+								</span>
+							</div>
+							<input type="text" class="form-control" id="ncCif" name="ncCif" placeholder="Cif de Tienda" aria-describedby="cifPrepend" value="" required>
+							<div class="invalid-feedback">El cif es obligatorio.</div>
+							<div class="valid-feedback">Correcto.</div> </div>
+						</div>
+					<div class="col-md-6 mb-3">
+					<label for="ncName">Nombre *</label>
+					<div class="input-group">
+						<div class="input-group-prepend">
+							<span class="input-group-text" id="namePrepend">
+								<i class="fas fa-heading"></i>
+							</span>
+						</div>
+						<input type="text" class="form-control" id="ncName" name="ncName" placeholder="Nombre de Tienda" aria-describedby="namePrepend" value="" required>
+						<div class="invalid-feedback">El nombre es obligatorio.</div>
+						<div class="valid-feedback">Correcto.</div> </div>
+					</div>
+					<div class="col-md-6 mb-3">
+						<label for="ncAddress">Dirección</label>
+						<div class="input-group">
+							<div class="input-group-prepend">
+								<span class="input-group-text" id="adrPrepend">
+									<i class="fas fa-align-left"></i>
+								</span>
+							</div>
+							<input type="text" class="form-control" id="ncAddress" name="ncAddress"aria-describedby="adrPrepend" value="" required>
+							<div class="invalid-feedback"></div>
+							<div class="valid-feedback">Correcto.</div>
+						</div>
+					</div>
+					<div class="col-md-6 mb-3">
+						<label for="ncPhone">Teléfono *</label>
+						<div class="input-group">
+							<div class="input-group-prepend">
+								<span class="input-group-text" id="phonePrepend">
+									<i class="fas fa-image"></i>
+								</span>
+							</div>
+							<input type="number" class="form-control" id="ncPhone" name="ncPhone" placeholder="" aria-describedby="phonePrepend" value="" required>
+							<div class="invalid-feedback">El teléfono no es válido.</div>
+							<div class="valid-feedback">Correcto.</div>
+						</div>
+					</div>
+					<label for="ncCoords">Coordenadas</label>
+					<div class="input-group">
+						<div class="input-group-prepend">
+							<span class="input-group-text" id="coordsPrepend">
+								<i class="fas fa-align-left"></i>
+							</span>
+						</div>
+						<input type="text" class="form-control" id="ncCoords" name="ncCoords"aria-describedby="coordsPrepend" value="" required>
+						<div class="invalid-feedback"></div>
+						<div class="valid-feedback">Correcto.</div>
+					</div>
+				</div>
+				<div>
+					<button id="btnEnviar" class="btn btn-primary" type="submit">Enviar</button>
+					<button class="btn btn-primary" type="reset">Cancelar</button>
+				</div>
+			</form>
+		</div>`);
+		this.main.append(container);
+	}
+
+	// Modal de creación de tiendas
+	showNewStoreModal(done, sto, error) {
+		$(document.fNewStore).find('div.error').remove();
+		if(done) {
+			let modal = $(`
+				<div class="modal fade" id="newStoreModal" tabindex="-1" data-backdrop="static" data-keyboard="false" role="dialog" aria-labelledby="newStoreModalLabel" aria-hidden="true">
+					<div class="modal-dialog" role="document">
+						<div class="modal-content">
+							<div class="modal-header">
+								<h5 class="modal-title" id="newStoreModalLabel">Tienda creada</h5>
+								<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+									<span aria-hidden="true">&times;</span>
+								</button>
+							</div>
+							<div class="modal-body"> La tienda <strong>${sto.name}</strong> ha sido creada correctamente. </div>
+							<div class="modal-footer">
+								<button type="button" class="btn btn-primary" data-dismiss="modal">Aceptar</button>
+							</div>
+						</div>
+					</div>
+				</div>
+			`);
+
+			$('body').append(modal);
+			let newStoreModal = $('#newStoreModal');
+			newStoreModal.modal('show');
+			newStoreModal.find('button').click(() => {
+				newStoreModal.on('hidden.bs.modal', function (event) {
+					document.fNewStore.reset();
+					document.fNewStore.ncCif.focus();
+					this.remove();
+				});
+				newStoreModal.modal('hide');
+			})
+		} else {
+			$(document.fNewStore).prepend(`
+				<div class="error text-danger p-3">
+					<i class="fas fa-exclamation-triangle"></i> La tienda <strong>${sto.name}</strong> ya está creada.
+				</div>
+			`);
+		}
+	}
+
+	// Formulario de eliminación de tiendas
+	showRemoveStoreForm(stores) {
+		this.main.empty();
+		if (this.stores.children().length > 1)
+			this.stores.children()[1].remove();
+		let container = $(`<div id="remove-store" class="container my-3">
+			<h1 class="display-5">Eliminar una tienda</h1>
+			<div id="store-list" class="row"></div>
+			</div>`);
+
+		for (let [key] of stores){
+			container.children().nextAll('div').append(`<div class="cat col-lg-3 col-md-6">
+				<div class="sto-list-text">
+					<h3>${key.name}</h3>
+					<div><button class="btn btn-primary" data-store="${key.cif}" type='button'>Eliminar</button></div>
+				</div>
+			</div>`);
+		}
+		this.stores.append(container);
+		this.main.append(container);
+	}
+
+	// Modal de eliminación de tiendas
+	showRemoveStoreModal(done, sto, position, error) {
+		$('remove-store').find('div.error').remove();
+		if (done){
+			let modal = $(`<div class="modal fade" id="removeStoreModal" tabindex="-1"
+				data-backdrop="static" data-keyboard="false" role="dialog" aria-labelledby="removeStoreModalLabel" aria-hidden="true">
+				<div class="modal-dialog" role="document">
+					<div class="modal-content">
+						<div class="modal-header">
+							<h5 class="modal-name" id="removeStoreModalLabel">Tienda eliminada</h5>
+							<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+								<span aria-hidden="true">&times;</span>
+							</button>
+						</div>
+						<div class="modal-body">
+							La tienda <strong>${sto.name}</strong> ha sido eliminada correctamente.
+						</div>
+						<div class="modal-footer">
+							<button type="button" class="btn btn-primary" data-dismiss="modal">Aceptar</button>
+						</div>
+					</div>
+				</div>
+			</div>`);
+			$('body').append(modal);
+			let removeStoreModal = $('#removeStoreModal');
+				removeStoreModal.modal('show');
+				removeStoreModal.find('button').click(() => {
+				removeStoreModal.on('hidden.bs.modal', function (event) {
+					this.remove();
+				});
+				removeStoreModal.modal('hide');
+				let divSto = $('#remove-store').find(`div > div:nth-child(${position + 1})`);
+				divSto.remove();
+			})
+		} else {
+			$('#removeStoreModal').prepend(`
+				<div class="error text-danger p-3">
+					<i class="fas fa-exclamation-triangle"></i> La tienda <strong>${sto.name}</strong> no exite en el almacén.
+				</div>
+			`);
+		}
+	}
+
+	bindRemoveStoreForm(handler){
+		$('#remove-store').find('button').click(function (event){
+			handler(this.dataset.store, $(this).closest('div.sto').index());
+		})
 	}
 
 	// Muestra los productos listados de una tienda ordenados por categorias
@@ -269,19 +898,6 @@ class StoreHouseView {
 		}
 	}
 
-	/*
-		#executeHandler(handler, handlerArguments, scrollElement, data, url, event) {
-		handler(...handlerArguments);
-		$(scrollElement).get(0).scrollIntoView();
-		history.pushState(data, null, url);
-		event.preventDefault();
-	}
-
-	this.#executeHandler(handler, [], 'body', {action: 'init'}, '#', event);
-
-	handler, [], 'body', {action: 'init'}, '#', event
-	*/
-
 	bindProductsStoreList(handler){
 		$('#store-list').find('a').click((event) => {
 			let store = $(event.target).closest($('a')).get(0).dataset.store;
@@ -307,7 +923,6 @@ class StoreHouseView {
 			//handler(this.dataset.store);
 		});
 	}
-
 
 	bindProductsCategoryListInMenu(handler) {
 		$('#navCats').next().children().click((event) => {
@@ -348,7 +963,7 @@ class StoreHouseView {
 			);
 		});
 	}*/
-
+	// 6.2. Página 10
 	bindShowProductInNewWindow(handler){
 		$('.bOpen').click((event) => {
 			let tam = this.productWindow.length;
@@ -367,6 +982,69 @@ class StoreHouseView {
 				}
 			}
 		});
+	}
+
+	bindAdminMenu(hNewProduct, hRemoveProduct, hNewCategory, hRemoveCategory, hNewStore, hRemoveStore) {
+		$('#lnewProduct').click((event) => {
+			this.#executeHandler(
+				hNewProduct, [],
+				'#new-product',
+				{action: 'newProduct'},
+				'#', event
+			);
+		});
+		$('#lnewCategory').click((event) => {
+			this.#executeHandler(
+				hNewCategory, [],
+				'#new-category',
+				{action: 'newCategory'},
+				'#', event
+			);
+		});
+		$('#lnewStore').click((event) => {
+			this.#executeHandler(
+				hNewStore, [],
+				'#new-store',
+				{action: 'newStore'},
+				'#', event
+			);
+		});
+		$('#ldelProduct').click((event) => {
+			this.#executeHandler(
+				hRemoveProduct, [],
+				'#remove-product',
+				{action: 'removeProduct'},
+				'#', event
+			);
+		});
+		$('#ldelCategory').click((event) => {
+			this.#executeHandler(
+				hRemoveCategory, [],
+				'#remove-category',
+				{action: 'removeCategory'},
+				'#', event
+			);
+		});
+		$('#ldelStore').click((event) => {
+			this.#executeHandler(
+				hRemoveStore, [],
+				'#remove-store',
+				{action: 'removeStore'},
+				'#', event
+			);
+		});
+	}
+
+	bindNewProductForm(handler) {
+		newProductValidation(handler);
+	}
+
+	bindNewCategoryForm(handler) {
+		newCategoryValidation(handler);
+	}
+
+	bindNewStoreForm(handler) {
+		newStoreValidation(handler);
 	}
 }
 

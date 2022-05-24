@@ -11,7 +11,27 @@ const historyActions = {
 	productsStoreList: (event) => {
 		StoreHouseApp.handleProductsStoreList(event.state.store);
 	},
-	productsCategoryList: (event) => StoreHouseApp.handleProductsCategoryList(event.state.category)
+	productsCategoryList: (event) => {
+		StoreHouseApp.handleProductsCategoryList(event.state.category);
+	},
+	newProduct: (event) => {
+		StoreHouseApp.handleNewProductForm();
+	},
+	newCategory: (event) => {
+		StoreHouseApp.handleNewCategoryForm();
+	},
+	newStore: (event) => {
+		StoreHouseApp.handleNewStoreForm();
+	},
+	removeProduct: (event) => {
+		StoreHouseApp.handleRemoveProductForm();
+	},
+	removeCategory: (event) => {
+		StoreHouseApp.handleRemoveCategoryForm();
+	},
+	removeStore: (event) => {
+		StoreHouseApp.handleRemoveStoreForm();
+	}
 	//showProduct: (event) => StoreHouseApp.handleShowProduct(event.state.serial)
 }
 
