@@ -299,146 +299,185 @@ class StoreHouseView {
 	// Formulario de creación de productos
 	showNewProductForm() {
 		this.main.empty();
-		if(this.stores.children().length > 1) this.stores.children()[1].remove();
+		if (this.categories.children().length > 1)
+			this.categories.children()[1].remove();
 
-		let container = $(`
-		<div id="new-store" class="container my-3">
-			<h1 class="display-5">Nueva Tienda</h1>
-			<form class="form" name="fNewStore" role="form" novalidate>
-					<div class="col-md-6 mb-3">
-						<label for="ncCif">Cif *</label>
-						<div class="input-group">
-							<div class="input-group-prepend">
-								<span class="input-group-text" id="cifPrepend">
-									<i class="fas fa-heading"></i>
-								</span>
-							</div>
-							<input type="text" class="form-control" id="ncCif" name="ncCif" placeholder="Cif de Tienda" aria-describedby="cifPrepend" value="" required>
-							<div class="invalid-feedback">El cif es obligatorio.</div>
-							<div class="valid-feedback">Correcto.</div> </div>
-						</div>
-					<div class="col-md-6 mb-3">
-
-						<label for="ncName">Nombre *</label>
-						<div class="input-group">
-							<div class="input-group-prepend">
-								<span class="input-group-text" id="namePrepend">
-									<i class="fas fa-heading"></i>
-								</span>
-							</div>
-							<input type="text" class="form-control" id="ncName" name="ncName" placeholder="Nombre de Tienda" aria-describedby="namePrepend" value="" required>
-							<div class="invalid-feedback">El nombre es obligatorio.</div>
-							<div class="valid-feedback">Correcto.</div> </div>
-						</div>
-					<div class="col-md-6 mb-3">
-						<label for="ncAddress">Dirección</label>
-						<div class="input-group">
-							<div class="input-group-prepend">
-								<span class="input-group-text" id="adrPrepend">
-									<i class="fas fa-align-left"></i>
-								</span>
-							</div>
-							<input type="text" class="form-control" id="ncAddress" name="ncAddress"aria-describedby="adrPrepend" value="" required>
-							<div class="invalid-feedback"></div>
-							<div class="valid-feedback">Correcto.</div>
-						</div>
-					</div>
-					<div class="col-md-6 mb-3">
-						<label for="ncPhone">Teléfono *</label>
-						<div class="input-group">
-							<div class="input-group-prepend">
-								<span class="input-group-text" id="phonePrepend">
-									<i class="fas fa-image"></i>
-								</span>
-							</div>
-							<input type="number" class="form-control" id="ncPhone" name="ncPhone" placeholder="" aria-describedby="phonePrepend" value="" required>
-							<div class="invalid-feedback">El teléfono no es válido.</div>
-							<div class="valid-feedback">Correcto.</div>
-						</div>
-					</div>
-					<label for="ncCoords">Coordenadas</label>
-					<div class="input-group">
-						<div class="input-group-prepend">
-							<span class="input-group-text" id="coordsPrepend">
-								<i class="fas fa-align-left"></i>
-							</span>
-						</div>
-						<input type="text" class="form-control" id="ncCoords" name="ncCoords"aria-describedby="coordsPrepend" value="" required>
-						<div class="invalid-feedback"></div>
-						<div class="valid-feedback">Correcto.</div>
-					</div>
-				</div>
-				<div>
-					<button id="btnEnviar" class="btn btn-primary" type="submit">Enviar</button>
-					<button class="btn btn-primary" type="reset">Cancelar</button>
-				</div>
-			</form>
+		let container = $(`<div id="new-product" class="container my-3">
+			<h1 class="display-5">Nueva producto</h1>
 		</div>`);
+		let form = $(`<form name="fNewProduct" role="form" novalidate><form>`);
+		form.append(`<div class="form-row">
+			<div class="col-md-12 mb-3">
+				<label for="ncTitle">Número de serie *</label>
+				<div class="input-group">
+					<div class="input-group-prepend">
+						<span class="input-group-text" id="serialPrepend"><i class="fas fa-key"></i></span>
+					</div>
+					<input type="text" class="form-control" id="npSerial" name="npSerial" placeholder="Número de serie" aria-describedby="serialPrepend" value="" required>
+					<div class="invalid-feedback">El número de serie es obligatorio.</div>
+					<div class="valid-feedback">Correcto.</div>
+				</div>
+			</div>
+		</div>`);
+		form.append(`<div class="form-row">
+		<div class="col-md-6 mb-3">
+			<label for="ncTitle">Nombre *</label>
+			<div class="input-group">
+				<div class="input-group-prepend">
+					<span class="input-group-text" id="brandPrepend"><i class="fas fa-pen-fancy"></i></span>
+				</div>
+				<input type="text" class="form-control" id="npBrand" name="npBrand" placeholder="Nombre" aria-describedby="brandPrepend" value="" required>
+				<div class="invalid-feedback">El nombre es obligatorio.</div>
+				<div class="valid-feedback">Correcto.</div>
+			</div>
+		</div>
+	</div>`);
+	form.append(`<div class="form-row mb-2">
+			* Tipo de producto
+		</div>
+		<div class="form-row" id="cType">
+			<div class="col-md-3 mb-0 input-group">
+				<div class="input-group-prepend">
+					<div class="input-group-text">
+					<input type="radio" name="npType" id="npMovieType" value="Movie" required>
+					</div>
+				</div>
+				<label class="form-control" for="npMovieType">Película</label>
+			</div>
+			<div class="col-md-3 mb-0 input-group">
+				<div class="input-group-prepend">
+					<div class="input-group-text">
+					<input type="radio" name="npType" id="npGameType" value="Game" required>
+					</div>
+				</div>
+				<label class="form-control" for="npGameType">Juego</label>
+			</div>
+			<div class="col-md-3 mb-0 input-group">
+				<div class="input-group-prepend">
+					<div class="input-group-text">
+					<input type="radio" name="npType" id="npBookType" value="Book" required>
+					</div>
+				</div>
+				<label class="form-control" for="npBookType">Libro</label>
+			</div>
+			<div class="col-md-3 mb-3 mt-1 input-group">
+			<div class="invalid-feedback"><i class="fas fa-times"></i> El tipo de producto es obligatorio.</div>
+			<div class="valid-feedback"><i class="fas fa-check"></i> Correcto.</div>
+		</div>
+	</div>`);
+	form.append(`<div class="form-row">
+		<div class="col-md-3 mb-3">
+			<label for="ncTitle">Precio *</label>
+			<div class="input-group">
+				<div class="input-group-prepend">
+					<span class="input-group-text" id="pricePrepend"><i class="fas fa-euro-sign"></i></span>
+				</div>
+				<input type="number" class="form-control" id="npPrice" name="npPrice" min="0" step="10" placeholder="Precio" aria-describedby="pricePrepend" value="" required>
+				<div class="invalid-feedback">El precio es obligatorio.</div>
+				<div class="valid-feedback">Correcto.</div>
+			</div>
+		</div>
+		<div class="col-md-3 mb-3">
+			<label for="npTax">Porcentaje de impuestos</label>
+			<div class="input-group">
+				<div class="input-group-prepend">
+					<span class="input-group-text" id="taxPrepend"><i class="fas fa-percentage"></i></span>
+				</div>
+				<input type="number" class="form-control" id="npTax" name="npTax" min="0" step="1" placeholder="21%" aria-describedby="taxPrepend" value="21" required>
+				<div class="invalid-feedback">Los impuestos son obligatorios.</div>
+				<div class="valid-feedback">Correcto.</div>
+			</div>
+			</div>
+			<div class="col-md-6 mb-3">
+				<label for="npUrl">URL *</label>
+				<div class="input-group">
+					<div class="input-group-prepend">
+						<span class="input-group-text" id="urlPrepend"><i class="fas fa-image"></i></span>
+					</div>
+					<input type="url" class="form-control" id="npUrl" name="npUrl" placeholder="http://www.test.es" aria-describedby="urlPrepend" value="" required>
+					<div class="invalid-feedback">La URL no es válida.</div>
+					<div class="valid-feedback">Correcto.</div>
+				</div>
+			</div>
+		</div>`);
+		let select = $(`<select class="custom-select" id="npCategories" name="npCategories" aria-describedby="categoryPrepend" required multiple></select>`);
+		for (let [key, value] of this.categories){
+			select.append(`<option value="${value.title}">${value.title}</option>`);
+		}
+
+		form.append(`<button class="btn btn-primary m-1" type="submit">Enviar</button>`);
+		form.append(`<button class="btn btn-primary m-1" type="reset">Cancelar</button>`);
+		container.append(form);
 		this.main.append(container);
 	}
 
 	// Modal de creación de productos
-	showNewProductModal(done, pro, error) {
-		$(document.fNewCategory).find('div.error').remove();
-		if(done) {
-			let modal = $(`
-				<div class="modal fade" id="newCategoryModal" tabindex="-1" data-backdrop="static" data-keyboard="false" role="dialog" aria-labelledby="newCategoryModalLabel" aria-hidden="true">
-					<div class="modal-dialog" role="document">
-						<div class="modal-content">
-							<div class="modal-header">
-								<h5 class="modal-title" id="newCategoryModalLabel">Categoría creada</h5>
-								<button type="button" class="close" data-dismiss="modal" aria-label="Close">
-									<span aria-hidden="true">&times;</span>
-								</button>
-							</div>
-							<div class="modal-body"> La categoría <strong>${cat.title}</strong> ha sido creada correctamente. </div>
-							<div class="modal-footer">
-								<button type="button" class="btn btn-primary" data-dismiss="modal">Aceptar</button>
-							</div>
+	showNewProductModal(done, product, error) {
+		$(document.fNewProduct).find('div.error').remove();
+		if (done){
+			let modal = $(`<div class="modal fade" id="newProductModal" tabindex="-1"
+				data-backdrop="static" data-keyboard="false" role="dialog" aria-labelledby="newCategoryModalLabel" aria-hidden="true">
+				<div class="modal-dialog" role="document">
+					<div class="modal-content">
+						<div class="modal-header">
+							<h5 class="modal-title" id="newCategoryModalLabel">Producto creado</h5>
+							<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+								<span aria-hidden="true">&times;</span>
+							</button>
+						</div>
+						<div class="modal-body">
+							El producto <strong>${product.name}</strong> ha sido creada correctamente.
+						</div>
+						<div class="modal-footer">
+							<button type="button" class="btn btn-primary" data-dismiss="modal">Aceptar</button>
 						</div>
 					</div>
 				</div>
-			`);
-
+			</div>`);
 			$('body').append(modal);
-			let newCategoryModal = $('#newCategoryModal');
-			newCategoryModal.modal('show');
-			newCategoryModal.find('button').click(() => {
-				newCategoryModal.on('hidden.bs.modal', function (event) {
-					document.fNewCategory.reset();
-					document.fNewCategory.ncTitle.focus();
+			let newProductModal = $('#newProductModal');
+			newProductModal.modal('show');
+			newProductModal.find('button').click(() => {
+				newProductModal.on('hidden.bs.modal', function (event) {
+					document.fNewProduct.reset();
+					document.fNewProduct.npSerial.focus();
 					this.remove();
 				});
-				newCategoryModal.modal('hide');
+				newProductModal.modal('hide');
 			})
 		} else {
-			$(document.fNewCategory).prepend(`
-				<div class="error text-danger p-3">
-					<i class="fas fa-exclamation-triangle"></i> La categoría <strong>${cat.title}</strong> ya está creada.
-				</div>
-			`);
+			$(document.fNewProduct).prepend(`<div class="error text-danger p-3"><i class="fas fa-exclamation-triangle"></i> El producto <strong>${product.brand} - ${product.model}</strong> no ha podido crearse correctamente.</div>`);
 		}
 	}
 
 	// Formulario de eliminación de productos
 	showRemoveProductForm() {
 		this.main.empty();
-		if (this.categories.children().length > 1)
-			this.categories.children()[1].remove();
 		let container = $(`<div id="remove-category" class="container my-3">
-			<h1 class="display-5">Eliminar una categoría categoría</h1>
-			<div id="category-list" class="row"></div>
+			<h1 class="display-5">Eliminar un producto</h1>
+			<div id="product-list" class="row"></div>
 			</div>`);
 
-		for (let category of categories){
-			container.children().nextAll('div').append(`<div class="cat col-lg-3 col-md-6"><a data-category="${category.title}" href="#product-list">
-					<div class="cat-list-image"><img alt="${category.title}" src="${category.url}" />
-					</div>
-					<div class="cat-list-text">
-						<h3>${category.title}</h3>
-						<div><button class="btn btn-primary" data-category="${category.title}" type='button'>Eliminar</button></div>
-					</div>
-				</a>
+		for (let product of products) {
+			container.children().nextAll('div').append(`<div class="col mb-5">
+				<figure class="card h-100  ${product.constructor.name}-css">
+					<figcaption class="info-wrap">
+						<div class="sto-list-image">
+							<img class="card-img-top images" src="${product.images}" alt="${product.title}" />
+						</div>
+					</figcaption>
+						<div id="etiqueta" class="card-body p-4">
+							<div class="text-center">
+								<h6 class="fw-bolder">${product.title}</h6>
+								<div class="bottom-wrap">
+									<div class="cart mt-4 align-items-center">
+										<div><button class="btn btn-primary" data-category="${category.title}" type='button'>Eliminar</button></div>
+									</div>
+								</div>
+							</div>
+						</div>
+					</a>
+				</figure>
 			</div>`);
 		}
 		this.categories.append(container);

@@ -193,11 +193,16 @@ class StoreHouseController {
 		this.#viewStoreHouse.bindNewStoreForm(this.handleCreateStore);
 	}
 
-	handleCreateProduct = (serialNumber, name, description, price, tax) => {
-		let pro = new Product(serialNumber, name, description, price, tax);
-		let done, error;
+	handleCreateProduct = (serialNumber, name, desc, price, tax, url, type) => {
+		let instance = {
+			Movie: Movie,
+			Game: Game,
+			Book: Book,
+		};
+		let done, error, pro;
 
 		try{
+			pro = new instance[type](serial, name, desc, price, tax, url);
 			this.#modelStoreHouse.addProduct(pro);
 			done = true;
 		} catch(exception) {
