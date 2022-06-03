@@ -75,6 +75,68 @@ class StoreHouseController {
 		sh.addProductInShop(g5, s3, 15);
 		sh.addProductInShop(b4, s2, 12);
 		sh.addProductInShop(b5, s2, 10);
+
+		let jsonP = "";
+		let jsonS = "";
+		let jsonC = "";
+		let arP = [m1, m2, m3, m4, m5, g1, g2, g3, g4, g5, b1, b2, b3, b4, b5];
+		let arS = [s0, s1, s2, s3, s4];
+		let arC = [cat1, cat2, cat3];
+
+		for (let p of arP) {
+			let literal = {
+				serialNumber: p.serialNumber,
+				name: p.name,
+				description: p.description,
+				price: p.price,
+				tax: p.tax
+			};
+
+			if(p instanceof Movie) {
+				literal.title = p.title;
+				literal.director = p.director;
+				literal.year = p.year;
+			}
+			if(p instanceof Game) {
+				literal.title = p.title;
+				literal.company = p.company;
+				literal.size = p.size;
+				literal.year = p.year;
+			}
+			if(p instanceof Book) {
+				literal.title = p.title;
+				literal.author = p.author;
+				literal.pages = p.pages;
+				literal.year = p.year;
+			}
+
+			jsonP += JSON.stringify(literal);
+		}
+
+		for (let s of arS) {
+			let literal = {
+				cif: s.cif,
+				name: s.name,
+				address: s.address,
+				phone: s.phone,
+			};
+
+			jsonS += JSON.stringify(literal);
+		}
+
+		for (let c of arC) {
+			let literal = {
+				title: c.title,
+				description: c.description,
+				url: c.url,
+			};
+
+			jsonC += JSON.stringify(literal);
+		}
+
+		console.log(jsonP);
+		console.log(jsonS);
+		console.log(jsonC);
 	}
 
 	constructor(modelStoreHouse, viewStoreHouse) {
@@ -100,6 +162,7 @@ class StoreHouseController {
 			this.handleNewStoreForm,
 			this.handleRemoveStoreForm
 		);
+		this.#viewStoreHouse.showNewLoginForm();
 	}
 
 	onInit = () => {
@@ -107,6 +170,8 @@ class StoreHouseController {
 		this.#viewStoreHouse.bindProductsStoreList(
 			this.handleProductsStoreList
 		);
+		this.#viewStoreHouse.checkCookie('username');
+		this.#viewStoreHouse.createJSONFile(jsonP, jsonS, jsonC);
 	}
 
 	onAddStore = () => {

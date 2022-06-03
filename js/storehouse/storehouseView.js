@@ -56,8 +56,8 @@ class StoreHouseView {
 		}
 		this.stores.append(container);
 
-	// Botones de atrás y adelante del historial de la página
-	let bBack = $('<button class="btn btn-primary m-1 atras">Atrás</button>');
+		// Botones de atrás y adelante del historial de la página
+		let bBack = $('<button class="btn btn-primary m-1 atras">Atrás</button>');
 		bBack.click(function (event){
 			window.history.back();
 		});
@@ -772,7 +772,7 @@ class StoreHouseView {
 								<i class="fas fa-align-left"></i>
 							</span>
 						</div>
-						<input type="text" class="form-control" id="ncCoords" name="ncCoords"aria-describedby="coordsPrepend" value="" required>
+						<div class="container"><div class="m-4" id="mapid"></div></div>
 						<div class="invalid-feedback"></div>
 						<div class="valid-feedback">Correcto.</div>
 					</div>
@@ -784,6 +784,19 @@ class StoreHouseView {
 			</form>
 		</div>`);
 		this.main.append(container);
+		let mapContainer = $('#mapid');
+		mapContainer.css({ height: '350px', border: '2px solid #faa541' });
+		let map = L.map('mapid').setView([38.990831799999995, -3.9206173000000004], 15);
+		L.tileLayer('http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+			attribution: 'Map data &copy; <a href="http://openstreetmap.org">OpenStreetMap</a> contributors, <a href="http://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>, Imagery © <a href="http://cloudmade.com">CloudMade</a>',
+			maxZoom: 18
+		}).addTo(map);
+		map.on('click', function(event) {
+			L.marker([event.latlng.lat, event.latlng.lng]).addTo(map);
+		});
+		map.on('contextmenu', function(event) {
+			marker.setLatLng([event.latlng.lat, event.latlng.lng]);
+		});
 	}
 
 	// Modal de creación de tiendas
@@ -1086,6 +1099,69 @@ class StoreHouseView {
 
 	bindNewStoreForm(handler) {
 		newStoreValidation(handler);
+	}
+
+	checkCookie(cname) {
+		let user = this.getCookie(cname);
+
+		if(user !== "") {
+			this.greetUser();
+			$('#bLogin').remove();
+			$('#mainNav').append(`
+				<button id="bLogout" class="btn btn-outline-dark"> Log Out </button>
+			`);
+			$('#bLogout').click(() => {
+				this.setCookie('username', '', 0);
+				this.setCookie('pwd', '', 0);
+				location.reload();
+			});
+		}
+	}
+
+	setCookie(cname, cvalue, exdays) {
+		const d = new Date();
+		d.setTime(d.getTime() + (exdays*24*60*60*1000));
+		let expires = "expires="+ d.toUTCString();
+		document.cookie = cname + "=" + cvalue + ";" + expires + ";path=/";
+	}
+
+	getCookie(cname) {
+		let re = new RegExp('(?:(?:^|.*;\\s*)' + cname + '\\s*\\=\\s*([^;]*).*$)|^.*$');
+		return document.cookie.replace(re, "$1");
+	}
+
+	greetUser() {
+		let user = this.getCookie('username');
+		$('#saludo').empty().append('Hola ' + user);
+	}
+
+	showNewLoginForm() {
+		$('#bLogin').click(() => {
+			$('#id01').css('display', 'block');
+			$('#btnEnter').click(() => {
+				$('#id01').css('display', 'none');
+				let name = document.getElementsByName('uname')[0].value;
+				let pwd = document.getElementsByName('upwd')[0].value;
+				this.setCookie('username', name, 1);
+				this.setCookie('pwd', pwd, 1);
+				location.reload();
+			});
+		});
+	}
+
+	removeCookie() {
+		this.setCookie('pwd', pwd, 0);
+	}
+
+	createJSONFile(jsonP, jsonS, jsonC) {
+		$('#bodyJson').append(`
+			<div class="container">
+				<h1></h1>
+				<ul>
+					<li></li>
+				</ul>
+			</div>
+		`);
 	}
 }
 
