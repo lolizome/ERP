@@ -11,6 +11,9 @@ import {Product, Movie, Game, Book, Coords, Store, Category} from './storehouseM
 import {StoreHouseException, ObjecStoreHouseException} from './storehouseModel.js';
 
 class StoreHouseController {
+	#jsonP = "";
+	#jsonS = "";
+	#jsonC = "";
 	#modelStoreHouse;
 	#viewStoreHouse;
 	#loadStoreHouseObjects() {
@@ -29,11 +32,11 @@ class StoreHouseController {
 		let b3 = new Book('333-333-333', 'boo3', 'Descripción del producto', 23, 21, './js/images/b3.jpg', 'Harry Potter 3', 'J K Rowling', 400, 1999);
 		let b4 = new Book('333-333-334', 'boo4', 'Descripción del producto', 20, 21, './js/images/b4.jpg', 'Harry Potter 4', 'J K Rowling', 552, 2000);
 		let b5 = new Book('333-333-335', 'boo5', 'Descripción del producto', 2, 21, './js/images/b5.jpg', 'Harry Potter 5', 'J K Rowling', 359, 2003);
-		let s0 = new Store("O12345678", "La Tienda", "C/ Mercado 1", 123456789, { latitude: 255, longitude: 255 });
-		let s1 = new Store("A12345678", "La gran Tienda", "C/ Pokémon 4", 123456789, { latitude: 255, longitude: 23 });
-		let s2 = new Store("B12345678", "Tu Tienda en Casa", "C/ Buen Mercado 14", 123456789, { latitude: 255, longitude: 234 });
-		let s3 = new Store("C12345678", "Tienda", "C/ Gatos 1", 123456789, { latitude: 255, longitude: 2 });
-		let s4 = new Store("D12345678", "tiendaD", "C/ Safari 1", 123456789, { latitude: 255, longitude: 2 });
+		let s0 = new Store("O12345678", "La Tienda", "C/ Mercado 1", 123456789, { latitude: 38.9884, longitude: -3.928 });
+		let s1 = new Store("A12345678", "La gran Tienda", "C/ Pokémon 4", 123456789, { latitude: 52.48393, longitude: 113.545665 });
+		let s2 = new Store("B12345678", "Tu Tienda en Casa", "C/ Buen Mercado 14", 123456789, { latitude: 31.39483, longitude: 55.456464 });
+		let s3 = new Store("C12345678", "Tienda", "C/ Gatos 1", 123456789, { latitude: 42.4532980, longitude: 1.587348793 });
+		let s4 = new Store("D12345678", "tiendaD", "C/ Safari 1", 123456789, { latitude: 40, longitude: 22 });
 		let cat0 = new Category("Por defecto", "Categoría por defecto");
 		let cat1 = new Category("Peliculas", "Películas descarga online");
 		let cat2 = new Category("Juegos", "Juegos descarga online");
@@ -76,67 +79,64 @@ class StoreHouseController {
 		sh.addProductInShop(b4, s2, 12);
 		sh.addProductInShop(b5, s2, 10);
 
-		let jsonP = "";
-		let jsonS = "";
-		let jsonC = "";
+
 		let arP = [m1, m2, m3, m4, m5, g1, g2, g3, g4, g5, b1, b2, b3, b4, b5];
 		let arS = [s0, s1, s2, s3, s4];
 		let arC = [cat1, cat2, cat3];
+		let arP2 = [];
+		let arS2 = [];
+		let arC2 = [];
+		let cont = 0;
 
 		for (let p of arP) {
-			let literal = {
+			arP2.push({
 				serialNumber: p.serialNumber,
 				name: p.name,
 				description: p.description,
 				price: p.price,
 				tax: p.tax
-			};
+			});
 
 			if(p instanceof Movie) {
-				literal.title = p.title;
-				literal.director = p.director;
-				literal.year = p.year;
+				arP2[cont].title = p.title;
+				arP2[cont].director = p.director;
+				arP2[cont].year = p.year;
 			}
 			if(p instanceof Game) {
-				literal.title = p.title;
-				literal.company = p.company;
-				literal.size = p.size;
-				literal.year = p.year;
+				arP2[cont].title = p.title;
+				arP2[cont].company = p.company;
+				arP2[cont].size = p.size;
+				arP2[cont].year = p.year;
 			}
 			if(p instanceof Book) {
-				literal.title = p.title;
-				literal.author = p.author;
-				literal.pages = p.pages;
-				literal.year = p.year;
+				arP2[cont].title = p.title;
+				arP2[cont].author = p.author;
+				arP2[cont].pages = p.pages;
+				arP2[cont].year = p.year;
 			}
 
-			jsonP += JSON.stringify(literal);
+			cont++;
 		}
+		this.jsonP = JSON.stringify(arP2);
 
 		for (let s of arS) {
-			let literal = {
+			arS2.push({
 				cif: s.cif,
 				name: s.name,
 				address: s.address,
-				phone: s.phone,
-			};
-
-			jsonS += JSON.stringify(literal);
+				phone: s.phone
+			});
 		}
+		this.jsonS = JSON.stringify(arS2);
 
 		for (let c of arC) {
-			let literal = {
+			arC2.push({
 				title: c.title,
 				description: c.description,
-				url: c.url,
-			};
-
-			jsonC += JSON.stringify(literal);
+				url: c.url
+			});
 		}
-
-		console.log(jsonP);
-		console.log(jsonS);
-		console.log(jsonC);
+		this.jsonC = JSON.stringify(arC2);
 	}
 
 	constructor(modelStoreHouse, viewStoreHouse) {
@@ -153,6 +153,7 @@ class StoreHouseController {
 		this.#loadStoreHouseObjects();
 		this.onAddStore();
 		this.onAddCategory();
+		this.onAddMap();
 		this.#viewStoreHouse.showAdminInMenu();
 		this.#viewStoreHouse.bindAdminMenu(
 			this.handleNewProductForm,
@@ -162,6 +163,7 @@ class StoreHouseController {
 			this.handleNewStoreForm,
 			this.handleRemoveStoreForm
 		);
+		this.#viewStoreHouse.checkCookie('username');
 		this.#viewStoreHouse.showNewLoginForm();
 	}
 
@@ -170,8 +172,7 @@ class StoreHouseController {
 		this.#viewStoreHouse.bindProductsStoreList(
 			this.handleProductsStoreList
 		);
-		this.#viewStoreHouse.checkCookie('username');
-		this.#viewStoreHouse.createJSONFile(jsonP, jsonS, jsonC);
+		this.#viewStoreHouse.createJSONFile(this.jsonP, this.jsonS, this.jsonC);
 	}
 
 	onAddStore = () => {
@@ -188,13 +189,18 @@ class StoreHouseController {
 		);
 	}
 
+	onAddMap = () => {
+		this.#viewStoreHouse.showMapStores();
+		this.#viewStoreHouse.bindMapStores(this.#modelStoreHouse.stores);
+	}
+
 	handleInit = () => {
 		this.onInit();
 	}
 
 	handleProductsStoreList = (cif) => {
 		let store = this.#modelStoreHouse.getStore(cif);
-		this.#viewStoreHouse.listProducts(this.#modelStoreHouse.getShopProducts(store), store.name);
+		this.#viewStoreHouse.listProductsStores(this.#modelStoreHouse.getShopProducts(store), store.name, store.coords);
 		//this.#viewStoreHouse.bindShowProduct(this.handleShowProduct);
 		this.#viewStoreHouse.bindShowProductInNewWindow(
 			this.handleShowProductInNewWindow
@@ -203,7 +209,7 @@ class StoreHouseController {
 
 	handleProductsCategoryList = (title) => {
 		let category = this.#modelStoreHouse.getCategory(title);
-		this.#viewStoreHouse.listProducts(this.#modelStoreHouse.getCategoryProducts(category), category.title);
+		this.#viewStoreHouse.listProductsCategories(this.#modelStoreHouse.getCategoryProducts(category), category.title);
 		//this.#viewStoreHouse.bindShowProduct(this.handleShowProduct);
 		this.#viewStoreHouse.bindShowProductInNewWindow(
 			this.handleShowProductInNewWindow
@@ -265,7 +271,7 @@ class StoreHouseController {
 			Book: Book,
 		};
 		let done, error, pro;
-
+		console.log("0.5");
 		try{
 			pro = new instance[type](serial, name, desc, price, tax, url);
 			this.#modelStoreHouse.addProduct(pro);
@@ -295,7 +301,10 @@ class StoreHouseController {
 	}
 
 	handleCreateStore = (cif, name, address, phone, coords) => {
-		let sto = new Store(cif, name, address, phone, coords);
+		let res = coords.replace(/,/g, ".")
+		let arLatLng = res.split(". ");
+		let c = new Coords(arLatLng[0], arLatLng[1]);
+		let sto = new Store(cif, name, address, phone, c);
 		let done, error;
 
 		try{

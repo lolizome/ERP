@@ -28,8 +28,8 @@ function newProductValidation(handler) {
 		let isValid = true;
 		let firstInvalidElement = null;
 
-		this.npDescription.value = this.npDescription.value.trim();
-		showFeedBack($(this.npDescription), true);
+		this.npDesc.value = this.npDesc.value.trim();
+		showFeedBack($(this.npDesc), true);
 
 		if (!this.npUrl.checkValidity()) {
 			isValid = false;

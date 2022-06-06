@@ -191,6 +191,85 @@ body {
 
 #new-category {
 	position: relative;
+	justify-content: center;
+	text-align: center;
+}
+
+#new-product {
+	position: relative;
+	justify-content: center;
+	text-align: center;
+	position: relative;
+	margin: 0 auto;
+	justify-content: center;
+	flex-direction: column;
+	align-items: center;
+	padding-left: 200px;
+	padding-right: 200px;
+	margin-left: 100px;
+	margin-right: 100px;
+}
+
+#remove-category {
+	position: relative;
+	margin: 0 auto;
+	justify-content: center;
+	flex-direction: column;
+	display: flex;
+	align-items: center;
+}
+
+#remove-store {
+	position: relative;
+	margin: 0 auto;
+	justify-content: center;
+	flex-direction: column;
+	display: flex;
+	align-items: center;
+}
+
+.cat {
+	align-items: center;
+	text-align: center;
+	padding-top: 20px;
+	padding-bottom: 20px;
+	border: 1px solid black;
+}
+
+.cat1 {
+	align-items: center;
+	text-align: center;
+	padding-top: 20px;
+	padding-bottom: 20px;
+	border: 1px solid black;
+}
+
+.cat2 {
+	align-items: center;
+	text-align: center;
+	padding-top: 20px;
+	padding-bottom: 20px;
+	border: 1px solid black;
+}
+
+.rmv {
+	align-items: center;
+	text-align: center;
+	margin-top: 100px;
+}
+
+.rmv1 {
+	align-items: center;
+	text-align: center;
+	margin-top: 80px;
+	margin-left: 100px;
+	margin-right: 100px;
+}
+
+.ns {
+	margin: 0 auto;
+	text-align: center;
+	margin-bottom: 20px;
 }
 
 .form {
@@ -404,6 +483,11 @@ span.psw {
 
 .bClose:hover {
 	transform: scale(1.05);
+}
+
+#btnLoad {
+	position: absolute;
+	padding-left: 450px;
 }
 
 .atras {

@@ -318,7 +318,7 @@ class Store {
 		this.#phone = phone;
 	}
 	get coords() {
-		return this.coords.toString();
+		return this.#coords;
 	}
 	set coords(coords) {
 		this.#coords = coords;

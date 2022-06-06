@@ -212,6 +212,16 @@ class StoreHouseView {
 		return $('<div>Características de libro.</div>');
 	}
 
+	// Muestra el mapa general de las tiendas con sus ubicaciones
+	showMapStores() {
+		let ul = $('.navbar-nav');
+		ul.append(`
+			<li class="nav-item">
+				<a class="nav-link navMap" href="#map-list">Mapa</a>
+			</li>
+		`);
+	}
+
 	// Muestra las tiendas existentes en el menú
 	showStoresInMenu(stores) {
 		let link = $('#navStos');
@@ -281,7 +291,7 @@ class StoreHouseView {
 
 	// Muestra la gestión de productos, categorías y tiendas en el menú
 	showAdminInMenu() {
-		let li = $(`<li class="nav-item dropdown">
+		let li = $(`<li id="liAdmin" class="nav-item dropdown">
 		<a id="navAdmin" class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
 			Gestiones
 		</a>
@@ -304,38 +314,40 @@ class StoreHouseView {
 		if (this.categories.children().length > 1)
 			this.categories.children()[1].remove();
 
-		let container = $(`<div id="new-product" class="container my-3">
-			<h1 class="display-5">Nueva producto</h1>
+		let container = $(`<div class="container my-3">
+			<h1 class="display-5 ns">Nuevo producto</h1>
 		</div>`);
-		let form = $(`<form name="fNewProduct" role="form" novalidate><form>`);
-		form.append(`<div class="form-row">
+		let form = $(`<form id="new-product" class="cat2" method="post" name="fNewProduct" role="form" novalidate><form>
+		<div class="form-row">
 			<div class="col-md-12 mb-3">
 				<label for="ncTitle">Número de serie *</label>
 				<div class="input-group">
-					<div class="input-group-prepend">
-						<span class="input-group-text" id="serialPrepend"><i class="fas fa-key"></i></span>
-					</div>
 					<input type="text" class="form-control" id="npSerial" name="npSerial" placeholder="Número de serie" aria-describedby="serialPrepend" value="" required>
 					<div class="invalid-feedback">El número de serie es obligatorio.</div>
 					<div class="valid-feedback">Correcto.</div>
 				</div>
 			</div>
-		</div>`);
-		form.append(`<div class="form-row">
-		<div class="col-md-6 mb-3">
+		</div>
+		<div class="form-row">
+		<div class="col-md-12 mb-3">
 			<label for="ncTitle">Nombre *</label>
 			<div class="input-group">
-				<div class="input-group-prepend">
-					<span class="input-group-text" id="brandPrepend"><i class="fas fa-pen-fancy"></i></span>
-				</div>
 				<input type="text" class="form-control" id="npBrand" name="npBrand" placeholder="Nombre" aria-describedby="brandPrepend" value="" required>
 				<div class="invalid-feedback">El nombre es obligatorio.</div>
 				<div class="valid-feedback">Correcto.</div>
 			</div>
 		</div>
-	</div>`);
-	form.append(`<div class="form-row mb-2">
-			* Tipo de producto
+	</div>
+	<div class="form-row">
+		<div class="col-md-12 mb-3">
+			<label for="ncDesc">Descripción</label>
+			<div class="input-group">
+				<input type="text" class="form-control" id="npDesc" name="npDesc" placeholder="Descripción" aria-describedby="descPrepend" value="">
+			</div>
+		</div>
+	</div>
+	<div class="form-row mb-2">
+			Tipo de producto *
 		</div>
 		<div class="form-row" id="cType">
 			<div class="col-md-3 mb-0 input-group">
@@ -366,36 +378,27 @@ class StoreHouseView {
 			<div class="invalid-feedback"><i class="fas fa-times"></i> El tipo de producto es obligatorio.</div>
 			<div class="valid-feedback"><i class="fas fa-check"></i> Correcto.</div>
 		</div>
-	</div>`);
-	form.append(`<div class="form-row">
-		<div class="col-md-3 mb-3">
+	</div>
+	<div class="form-row">
+		<div class="col-md-12 mb-3">
 			<label for="ncTitle">Precio *</label>
 			<div class="input-group">
-				<div class="input-group-prepend">
-					<span class="input-group-text" id="pricePrepend"><i class="fas fa-euro-sign"></i></span>
-				</div>
 				<input type="number" class="form-control" id="npPrice" name="npPrice" min="0" step="10" placeholder="Precio" aria-describedby="pricePrepend" value="" required>
 				<div class="invalid-feedback">El precio es obligatorio.</div>
 				<div class="valid-feedback">Correcto.</div>
 			</div>
 		</div>
-		<div class="col-md-3 mb-3">
+		<div class="col-md-12 mb-3">
 			<label for="npTax">Porcentaje de impuestos</label>
 			<div class="input-group">
-				<div class="input-group-prepend">
-					<span class="input-group-text" id="taxPrepend"><i class="fas fa-percentage"></i></span>
-				</div>
 				<input type="number" class="form-control" id="npTax" name="npTax" min="0" step="1" placeholder="21%" aria-describedby="taxPrepend" value="21" required>
 				<div class="invalid-feedback">Los impuestos son obligatorios.</div>
 				<div class="valid-feedback">Correcto.</div>
 			</div>
 			</div>
-			<div class="col-md-6 mb-3">
+			<div class="col-md-12 mb-3">
 				<label for="npUrl">URL *</label>
 				<div class="input-group">
-					<div class="input-group-prepend">
-						<span class="input-group-text" id="urlPrepend"><i class="fas fa-image"></i></span>
-					</div>
 					<input type="url" class="form-control" id="npUrl" name="npUrl" placeholder="http://www.test.es" aria-describedby="urlPrepend" value="" required>
 					<div class="invalid-feedback">La URL no es válida.</div>
 					<div class="valid-feedback">Correcto.</div>
@@ -407,28 +410,33 @@ class StoreHouseView {
 			select.append(`<option value="${value.title}">${value.title}</option>`);
 		}
 
-		form.append(`<button class="btn btn-primary m-1" type="submit">Enviar</button>`);
-		form.append(`<button class="btn btn-primary m-1" type="reset">Cancelar</button>`);
+		form.append(`
+			<div class="ns">
+				<button class="btn btn-primary m-1" type="submit">Enviar</button>
+				<button class="btn btn-primary m-1" type="reset">Cancelar</button>
+			</div>
+		`);
 		container.append(form);
 		this.main.append(container);
 	}
 
 	// Modal de creación de productos
 	showNewProductModal(done, product, error) {
+		console.log("1");
 		$(document.fNewProduct).find('div.error').remove();
 		if (done){
 			let modal = $(`<div class="modal fade" id="newProductModal" tabindex="-1"
-				data-backdrop="static" data-keyboard="false" role="dialog" aria-labelledby="newCategoryModalLabel" aria-hidden="true">
+				data-backdrop="static" data-keyboard="false" role="dialog" aria-labelledby="newProductModalLabel" aria-hidden="true">
 				<div class="modal-dialog" role="document">
 					<div class="modal-content">
 						<div class="modal-header">
-							<h5 class="modal-title" id="newCategoryModalLabel">Producto creado</h5>
+							<h5 class="modal-title" id="newProductModalLabel">Producto creado</h5>
 							<button type="button" class="close" data-dismiss="modal" aria-label="Close">
 								<span aria-hidden="true">&times;</span>
 							</button>
 						</div>
 						<div class="modal-body">
-							El producto <strong>${product.name}</strong> ha sido creada correctamente.
+							El producto <strong>${product.name}</strong> ha sido creado correctamente.
 						</div>
 						<div class="modal-footer">
 							<button type="button" class="btn btn-primary" data-dismiss="modal">Aceptar</button>
@@ -453,9 +461,9 @@ class StoreHouseView {
 	}
 
 	// Formulario de eliminación de productos
-	showRemoveProductForm() {
+	showRemoveProductForm(products) {
 		this.main.empty();
-		let container = $(`<div id="remove-category" class="container my-3">
+		let container = $(`<div id="remove-product" class="container my-3">
 			<h1 class="display-5">Eliminar un producto</h1>
 			<div id="product-list" class="row"></div>
 			</div>`);
@@ -543,15 +551,10 @@ class StoreHouseView {
 		let container = $(`
 		<div id="new-category" class="container my-3">
 			<h1 class="display-5">Nueva categoría</h1>
-			<form class="form" name="fNewCategory" role="form" novalidate>
+			<form class="form" method="post" name="fNewCategory" role="form" novalidate>
 					<div class="col-md-6 mb-3">
 						<label for="ncTitle">Título *</label>
 						<div class="input-group">
-							<div class="input-group-prepend">
-								<span class="input-group-text" id="titlePrepend">
-									<i class="fas fa-heading"></i>
-								</span>
-							</div>
 							<input type="text" class="form-control" id="ncTitle" name="ncTitle" placeholder="Título de categoría" aria-describedby="titlePrepend" value="" required>
 							<div class="invalid-feedback">El título es obligatorio.</div>
 							<div class="valid-feedback">Correcto.</div> </div>
@@ -559,12 +562,7 @@ class StoreHouseView {
 					<div class="col-md-6 mb-3">
 						<label for="ncDescription">Descripción</label>
 						<div class="input-group">
-							<div class="input-group-prepend">
-								<span class="input-group-text" id="descPrepend">
-									<i class="fas fa-align-left"></i>
-								</span>
-							</div>
-							<input type="text" class="form-control" id="ncDescription" name="ncDescription"aria-describedby="descPrepend" value="" required>
+							<input type="text" class="form-control" id="ncDescription" name="ncDescription" placeholder="Descripción de Categoría" aria-describedby="descPrepend" value="" required>
 							<div class="invalid-feedback"></div>
 							<div class="valid-feedback">Correcto.</div>
 						</div>
@@ -572,17 +570,12 @@ class StoreHouseView {
 					<div class="col-md-6 mb-3">
 						<label for="ncUrl">URL *</label>
 						<div class="input-group">
-							<div class="input-group-prepend">
-								<span class="input-group-text" id="urlPrepend">
-									<i class="fas fa-image"></i>
-								</span>
-							</div>
 							<input type="url" class="form-control" id="ncUrl" name="ncUrl" placeholder="http://www.test.es" aria-describedby="urlPrepend" value="" required>
 							<div class="invalid-feedback">La URL no es válida.</div>
 							<div class="valid-feedback">Correcto.</div>
 						</div>
 					</div>
-				<div>
+				<div class="ns">
 					<button id="btnEnviar" class="btn btn-primary" type="submit">Enviar</button>
 					<button class="btn btn-primary" type="reset">Cancelar</button>
 				</div>
@@ -641,18 +634,19 @@ class StoreHouseView {
 		if (this.categories.children().length > 1)
 			this.categories.children()[1].remove();
 		let container = $(`<div id="remove-category" class="container my-3">
-			<h1 class="display-5">Eliminar una categoría</h1>
+			<h1 class="display-5 ns">Eliminar una categoría</h1>
 			<div id="category-list" class="row"></div>
-			</div>`);
+		</div>`);
 
 		for (let [key, value] of categories){
-			container.children().nextAll('div').append(`<div class="cat col-lg-3 col-md-6">
+			container.children().nextAll('div').append(`<div class="cat1 col-lg-3 col-md-6">
 				<div class="cat-list-text">
 					<h3>${value.title}</h3>
-					<div><button class="btn btn-primary" data-category="${value.title}" type='button'>Eliminar</button></div>
+					<div class="rmv1"><button class="btn btn-primary" data-category="${value.title}" type='button'>Eliminar</button></div>
 				</div>
 			</div>`);
 		}
+
 		this.categories.append(container);
 		this.main.append(container);
 	}
@@ -713,16 +707,11 @@ class StoreHouseView {
 
 		let container = $(`
 		<div id="new-store" class="container my-3">
-			<h1 class="display-5">Nueva Tienda</h1>
-			<form class="form" name="fNewStore" role="form" novalidate>
+			<h1 class="display-5 ns">Nueva Tienda</h1>
+			<form class="form" method="post" name="fNewStore" role="form" novalidate>
 					<div class="col-md-6 mb-3">
 						<label for="ncCif">Cif *</label>
 						<div class="input-group">
-							<div class="input-group-prepend">
-								<span class="input-group-text" id="cifPrepend">
-									<i class="fas fa-heading"></i>
-								</span>
-							</div>
 							<input type="text" class="form-control" id="ncCif" name="ncCif" placeholder="Cif de Tienda" aria-describedby="cifPrepend" value="" required>
 							<div class="invalid-feedback">El cif es obligatorio.</div>
 							<div class="valid-feedback">Correcto.</div> </div>
@@ -730,11 +719,6 @@ class StoreHouseView {
 					<div class="col-md-6 mb-3">
 					<label for="ncName">Nombre *</label>
 					<div class="input-group">
-						<div class="input-group-prepend">
-							<span class="input-group-text" id="namePrepend">
-								<i class="fas fa-heading"></i>
-							</span>
-						</div>
 						<input type="text" class="form-control" id="ncName" name="ncName" placeholder="Nombre de Tienda" aria-describedby="namePrepend" value="" required>
 						<div class="invalid-feedback">El nombre es obligatorio.</div>
 						<div class="valid-feedback">Correcto.</div> </div>
@@ -742,12 +726,7 @@ class StoreHouseView {
 					<div class="col-md-6 mb-3">
 						<label for="ncAddress">Dirección</label>
 						<div class="input-group">
-							<div class="input-group-prepend">
-								<span class="input-group-text" id="adrPrepend">
-									<i class="fas fa-align-left"></i>
-								</span>
-							</div>
-							<input type="text" class="form-control" id="ncAddress" name="ncAddress"aria-describedby="adrPrepend" value="" required>
+							<input type="text" class="form-control" id="ncAddress" name="ncAddress" placeholder="Dirección de Tienda" aria-describedby="adrPrepend" value="" required>
 							<div class="invalid-feedback"></div>
 							<div class="valid-feedback">Correcto.</div>
 						</div>
@@ -755,31 +734,25 @@ class StoreHouseView {
 					<div class="col-md-6 mb-3">
 						<label for="ncPhone">Teléfono *</label>
 						<div class="input-group">
-							<div class="input-group-prepend">
-								<span class="input-group-text" id="phonePrepend">
-									<i class="fas fa-image"></i>
-								</span>
-							</div>
-							<input type="number" class="form-control" id="ncPhone" name="ncPhone" placeholder="" aria-describedby="phonePrepend" value="" required>
+							<input type="number" class="form-control" id="ncPhone" name="ncPhone" placeholder="Número de contacto de Tienda" aria-describedby="phonePrepend" value="" required>
 							<div class="invalid-feedback">El teléfono no es válido.</div>
 							<div class="valid-feedback">Correcto.</div>
 						</div>
 					</div>
-					<label for="ncCoords">Coordenadas</label>
-					<div class="input-group">
-						<div class="input-group-prepend">
-							<span class="input-group-text" id="coordsPrepend">
-								<i class="fas fa-align-left"></i>
-							</span>
+					<div class="col-md-6 mb-3">
+						<label for="ncCoords">Coordenadas</label>
+						<div class="input-group">
+							<input type="text" class="form-control" id="ncCoords" name="ncCoords" placeholder="Coordenadas de Tienda" aria-describedby="adrPrepend" value="" required>
+							<div class="invalid-feedback"></div>
+							<div class="valid-feedback">Correcto.</div>
 						</div>
-						<div class="container"><div class="m-4" id="mapid"></div></div>
-						<div class="invalid-feedback"></div>
-						<div class="valid-feedback">Correcto.</div>
 					</div>
-				</div>
-				<div>
-					<button id="btnEnviar" class="btn btn-primary" type="submit">Enviar</button>
-					<button class="btn btn-primary" type="reset">Cancelar</button>
+					<div class="container"><div class="m-4" id="mapid"></div></div>
+
+					<div class="ns">
+						<button id="btnEnviar" class="btn btn-primary" type="submit">Enviar</button>
+						<button class="btn btn-primary" type="reset">Cancelar</button>
+					</div>
 				</div>
 			</form>
 		</div>`);
@@ -793,6 +766,7 @@ class StoreHouseView {
 		}).addTo(map);
 		map.on('click', function(event) {
 			L.marker([event.latlng.lat, event.latlng.lng]).addTo(map);
+			$('#ncCoords').val(event.latlng.lat.toLocaleString() + ", " + event.latlng.lng.toLocaleString());
 		});
 		map.on('contextmenu', function(event) {
 			marker.setLatLng([event.latlng.lat, event.latlng.lng]);
@@ -848,15 +822,15 @@ class StoreHouseView {
 		if (this.stores.children().length > 1)
 			this.stores.children()[1].remove();
 		let container = $(`<div id="remove-store" class="container my-3">
-			<h1 class="display-5">Eliminar una tienda</h1>
+			<h1 class="display-5 ns">Eliminar una tienda</h1>
 			<div id="store-list" class="row"></div>
 			</div>`);
 
 		for (let [key] of stores){
 			container.children().nextAll('div').append(`<div class="cat col-lg-3 col-md-6">
 				<div class="sto-list-text">
-					<h3>${key.name}</h3>
-					<div><button class="btn btn-primary" data-store="${key.cif}" type='button'>Eliminar</button></div>
+					<div><h3>${key.name}</h3></div>
+					<div class="rmv"><button class="btn btn-primary" data-store="${key.cif}" type='button'>Eliminar</button></div>
 				</div>
 			</div>`);
 		}
@@ -913,8 +887,65 @@ class StoreHouseView {
 		})
 	}
 
+// Muestra los productos listados de una tienda ordenados por categorias de la tienda
+listProductsStores(products, name, coords) {
+	this.main.empty();
+	let container = $(`<div id="product-list" class="container center my-3 row gx-4 gx-lg-5 row-cols-2 row-cols-md-3 row-cols-xl-4 justify-content-center"></div>`);
+	for (let product of products) {
+		container.append(`<div class="col mb-5">
+			<figure class="card h-100  ${product.constructor.name}-css">
+				<figcaption class="info-wrap">
+					<div class="sto-list-image">
+						<img class="card-img-top images" src="${product.images}" alt="${product.title}" />
+					</div>
+				</figcaption>
+					<div id="etiqueta" class="card-body p-4">
+						<div class="text-center">
+							<h6 class="fw-bolder">${product.title}</h6>
+							<span class="price p">Precio - ${product.price.toLocaleString('es-ES', { style: 'currency', currency: 'EUR' })}</span><br>
+							<div class="bottom-wrap">
+								<div class="cart mt-4 align-items-center">
+									<button data-serial="${product.serialNumber}" class="bOpen btn btn-primary float-right mr-2 px-4"> Información </button>
+									<button data-serial="${product.serialNumber}" id="bDelete" class="bBuy btn btn-primary float-right mr-2 px-4"> Eliminar </button>
+								</div>
+							</div>
+						</div>
+					</div>
+				</a>
+			</figure>
+		</div>`);
+	}
+	//this.main.prepend(`<div id="filtro">Filtrar por <input type="text" id="myInput" onkeyup="myFunction()" placeholder="Search for names.."></div>`);
+	this.main.prepend(`<hr></hr>`);
+	this.main.prepend($('<div class="container"><div class="m-4" id="mapid"></div></div>'));
+	this.main.prepend(`<h1 id="h1-name" class="text-uppercase text-center">${name}</h1>`);
+	this.main.prepend(`<hr></hr>`);
+
+	let mapContainer = $('#mapid');
+	mapContainer.css({ height: '350px', border: '2px solid #faa541' });
+	let map = L.map('mapid').setView([coords.latitude, coords.longitude], 15);
+	L.tileLayer('http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+		attribution: 'Map data &copy; <a href="http://openstreetmap.org">OpenStreetMap</a> contributors, <a href="http://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>, Imagery © <a href="http://cloudmade.com">CloudMade</a>',
+		maxZoom: 18
+	}).addTo(map);
+	let circle = L.circle([coords.latitude, coords.longitude], {
+		color: '#2E8848',
+		fillColor: '#90E6A9',
+		fillOpacity: 0.5,
+		radius: 100
+	}).addTo(map);
+
+	this.main.append(container);
+	for (let product of products) {
+		$('.Movie-css').css('border', '2px solid #75cc96');
+		$('.Game-css').css('border', '2px solid #e85b5b');
+		$('.Book-css').css('border', '2px solid #77a6d3');
+	}
+}
+
+
 	// Muestra los productos listados de una tienda ordenados por categorias
-	listProducts(products, name) {
+	listProductsCategories(products, name) {
 		this.main.empty();
 		let container = $(`<div id="product-list" class="container center my-3 row gx-4 gx-lg-5 row-cols-2 row-cols-md-3 row-cols-xl-4 justify-content-center"></div>`);
 		for (let product of products) {
@@ -962,6 +993,31 @@ class StoreHouseView {
 				'#store-list', event
 			);
 			//handler(this.dataset.store);
+		});
+	}
+
+	bindMapStores(stores, coords) {
+		$('.navMap').click((event) => {
+			this.main.empty();
+			this.main.append($('<div class="container"><h1 class="ns">Mapa de Tiendas</h1><div class="m-4" id="mapid"></div></div>'));
+
+			let mapContainer = $('#mapid');
+			mapContainer.css({ height: '350px', border: '2px solid #faa541' });
+			let map = L.map('mapid').setView([38.9884, -3.928], 15);
+			L.tileLayer('http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+				attribution: 'Map data &copy; <a href="http://openstreetmap.org">OpenStreetMap</a> contributors, <a href="http://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>, Imagery © <a href="http://cloudmade.com">CloudMade</a>',
+				maxZoom: 18
+			}).addTo(map);
+
+			for (let store of stores) {
+				let circle = L.circle([store[0].coords.latitude, store[0].coords.longitude], {
+					color: '#2E8848',
+					fillColor: '#90E6A9',
+					fillOpacity: 0.5,
+					radius: 100
+				}).addTo(map);
+				circle.bindPopup(store[0].name);
+			}
 		});
 	}
 
@@ -1115,6 +1171,8 @@ class StoreHouseView {
 				this.setCookie('pwd', '', 0);
 				location.reload();
 			});
+		} else {
+			$('#liAdmin').empty();
 		}
 	}
 
@@ -1154,14 +1212,76 @@ class StoreHouseView {
 	}
 
 	createJSONFile(jsonP, jsonS, jsonC) {
+		let products = JSON.parse(jsonP);
+		let stores = JSON.parse(jsonS);
+		let categories = JSON.parse(jsonC);
+
+		$('#bodyJson').append(`
+			<div class="jsonElem">
+				<div class="container">
+					<h1>JSON Products</h1>
+					<ul id="jp">
+					</ul>
+				</div>
+		`);
+		for (let p of products) {
+			$('#jp').append(`
+				<li>${p.serialNumber} - ${p.name} - ${p.description} - ${p.prize} - ${p.tax} -
+			`);
+
+			if(p.director !== undefined) {
+				$('#jp').append(`
+					${p.title} - ${p.director} - ${p.year}</li>
+				`);
+			}
+			if(p.company !== undefined) {
+				$('#jp').append(`
+					${p.title} - ${p.company} - ${p.size} - ${p.year}</li>
+				`);
+			}
+			if(p.author !== undefined) {
+				$('#jp').append(`
+					${p.title} - ${p.author} - ${p.pages} - ${p.year}</li>
+				`);
+			}
+		}
+
 		$('#bodyJson').append(`
 			<div class="container">
-				<h1></h1>
-				<ul>
-					<li></li>
+				<h1>JSON Stores</h1>
+				<ul id="js">
 				</ul>
 			</div>
 		`);
+		for (let s of stores) {
+			$('#js').append(`
+				<li>${s.cif} - ${s.name} - ${s.address} - ${s.phone}</li>
+			`);
+		}
+
+		$('#bodyJson').append(`
+				<div class="container">
+					<h1>JSON Stores</h1>
+					<ul id="jc">
+					</ul>
+				</div>
+			</div>
+		`);
+		for (let c of categories) {
+			$('#jc').append(`
+				<li>${c.title} - ${c.description} - ${c.url}</li>
+			`);
+		}
+
+		let bLoad = $(`<div id="btnLoad"><button class="btn btn-primary">Cargar HTML 1</button></div>`);
+		$('#head').append(bLoad);
+		bLoad.click(function (event) {
+			this.main.load('json.html');
+		});
+		/*console.log($('#bodyJson'));
+		$(document).ready(function () {
+      this.main.load('json.html');
+    });*/
 	}
 }
 
