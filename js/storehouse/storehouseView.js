@@ -1174,18 +1174,18 @@ listProductsStores(products, name, coords) {
 					tax: p[0].tax
 				});
 
-				if(p[0].hasOwnProperty("director")) {
+				if(p[0].constructor.name === "Movie") {
 					arP[cont].title = p[0].title;
 					arP[cont].director = p[0].director;
 					arP[cont].year = p[0].year;
 				}
-				if(p[0].hasOwnProperty("company")) {
+				if(p[0].constructor.name === "Game") {
 					arP[cont].title = p[0].title;
 					arP[cont].company = p[0].company;
 					arP[cont].size = p[0].size;
 					arP[cont].year = p[0].year;
 				}
-				if(p[0].hasOwnProperty("author")) {
+				if(p[0].constructor.name === "Book") {
 					arP[cont].title = p[0].title;
 					arP[cont].author = p[0].author;
 					arP[cont].pages = p[0].pages;
@@ -1303,7 +1303,7 @@ listProductsStores(products, name, coords) {
 				$('main').empty();
 				$('main').append(`
 						<div class="container">
-							<h1>JSON Products</h1>
+							<h1>Product List</h1>
 							<ul id="jp">
 							</ul>
 						</div>
@@ -1332,7 +1332,7 @@ listProductsStores(products, name, coords) {
 				}
 				$('main').append(`
 						<div class="container">
-							<h1>JSON Categories</h1>
+							<h1>Category List</h1>
 							<ul id="jc">
 							</ul>
 						</div>
@@ -1345,7 +1345,7 @@ listProductsStores(products, name, coords) {
 				}
 				$('main').append(`
 						<div class="container">
-							<h1>JSON Stores</h1>
+							<h1>Store List</h1>
 							<ul id="js">
 							</ul>
 						</div>

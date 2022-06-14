@@ -49,6 +49,17 @@ let StoreHouse = (function () {
 
 				this.name = name;
 			}
+			// Iterador de productos
+			get products() {
+				let array = this.#products;
+				return {
+					*[Symbol.iterator]() {
+						for (let product of array) {
+							yield product;
+						}
+					}
+				}
+			}
 			// Iterador de categorias
 			get categories() {
 				let array = this.#categories;
