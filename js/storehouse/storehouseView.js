@@ -296,7 +296,7 @@ class StoreHouseView {
 			Gestiones
 		</a>
 		</li>`);
-		let container = $(`<div class="dropdown-menu" aria-labelledby="navAdmin">
+		let container = $(`<div id="navMenu2" class="dropdown-menu" aria-labelledby="navAdmin">
 			<a id="lnewProduct" class="dropdown-item" href="#new-product">Crear Producto</a>
 			<a id="ldelProduct" class="dropdown-item" href="#del-product">Eliminar Producto</a>
 			<a id="lnewCategory" class="dropdown-item" href="#new-category">Crear Categoría</a>
@@ -1157,10 +1157,87 @@ listProductsStores(products, name, coords) {
 		newStoreValidation(handler);
 	}
 
+	bindAdminBackup(products, categories, stores) {
+		$('#lBackup').click((event) => {
+			let cont = 0;
+			let arP = [];
+			let arC = [];
+			let arS = [];
+			let general = [];
+
+			for (let p of products) {
+				arP.push({
+					serialNumber: p[0].serialNumber,
+					name: p[0].name,
+					description: p[0].description,
+					price: p[0].price,
+					tax: p[0].tax
+				});
+
+				if(p[0].hasOwnProperty("director")) {
+					arP[cont].title = p[0].title;
+					arP[cont].director = p[0].director;
+					arP[cont].year = p[0].year;
+				}
+				if(p[0].hasOwnProperty("company")) {
+					arP[cont].title = p[0].title;
+					arP[cont].company = p[0].company;
+					arP[cont].size = p[0].size;
+					arP[cont].year = p[0].year;
+				}
+				if(p[0].hasOwnProperty("author")) {
+					arP[cont].title = p[0].title;
+					arP[cont].author = p[0].author;
+					arP[cont].pages = p[0].pages;
+					arP[cont].year = p[0].year;
+				}
+
+				cont++;
+			}
+			general.push(arP);
+
+			for (let c of categories) {
+				arC.push({
+					title: c[1].title,
+					description: c[1].description,
+					url: c[1].url
+				});
+			}
+			general.push(arC);
+
+			for (let s of stores) {
+				arS.push({
+					cif: s[0].cif,
+					name: s[0].name,
+					address: s[0].address,
+					phone: s[0].phone
+				});
+			}
+			general.push(arS);
+			//let fd = new FormData();
+			//fd.append('data', JSON.stringify(general));
+			let data = JSON.stringify(general);
+
+			fetch("writeBackup.php", {
+				method: "post",
+				body: data
+			}).then(function(response) {
+				return response.text();
+			}).catch(function(error) {
+				console.log(error.message);
+			});
+		});
+	}
+
+	showBackupInMenu() {
+		let container = $('#navMenu2');
+		container.append(`<a id="lBackup" class="dropdown-item" href="#backup">Realizar backup</a>`);
+	}
+
 	checkCookie(cname) {
 		let user = this.getCookie(cname);
 
-		if(user !== "") {
+		if(user === "admin") {
 			this.greetUser();
 			$('#bLogin').remove();
 			$('#mainNav').append(`
@@ -1171,6 +1248,7 @@ listProductsStores(products, name, coords) {
 				this.setCookie('pwd', '', 0);
 				location.reload();
 			});
+			this.showBackupInMenu();
 		} else {
 			$('#liAdmin').empty();
 		}
@@ -1211,77 +1289,78 @@ listProductsStores(products, name, coords) {
 		this.setCookie('pwd', pwd, 0);
 	}
 
-	createJSONFile(jsonP, jsonS, jsonC) {
-		let products = JSON.parse(jsonP);
-		let stores = JSON.parse(jsonS);
-		let categories = JSON.parse(jsonC);
-
-		$('#bodyJson').append(`
-			<div class="jsonElem">
-				<div class="container">
-					<h1>JSON Products</h1>
-					<ul id="jp">
-					</ul>
-				</div>
-		`);
-		for (let p of products) {
-			$('#jp').append(`
-				<li>${p.serialNumber} - ${p.name} - ${p.description} - ${p.prize} - ${p.tax} -
-			`);
-
-			if(p.director !== undefined) {
-				$('#jp').append(`
-					${p.title} - ${p.director} - ${p.year}</li>
-				`);
-			}
-			if(p.company !== undefined) {
-				$('#jp').append(`
-					${p.title} - ${p.company} - ${p.size} - ${p.year}</li>
-				`);
-			}
-			if(p.author !== undefined) {
-				$('#jp').append(`
-					${p.title} - ${p.author} - ${p.pages} - ${p.year}</li>
-				`);
-			}
-		}
-
-		$('#bodyJson').append(`
-			<div class="container">
-				<h1>JSON Stores</h1>
-				<ul id="js">
-				</ul>
-			</div>
-		`);
-		for (let s of stores) {
-			$('#js').append(`
-				<li>${s.cif} - ${s.name} - ${s.address} - ${s.phone}</li>
-			`);
-		}
-
-		$('#bodyJson').append(`
-				<div class="container">
-					<h1>JSON Stores</h1>
-					<ul id="jc">
-					</ul>
-				</div>
-			</div>
-		`);
-		for (let c of categories) {
-			$('#jc').append(`
-				<li>${c.title} - ${c.description} - ${c.url}</li>
-			`);
-		}
-
+	createJSONFile() {
 		let bLoad = $(`<div id="btnLoad"><button class="btn btn-primary">Cargar HTML 1</button></div>`);
 		$('#head').append(bLoad);
-		bLoad.click(function (event) {
-			this.main.load('json.html');
+
+		$('#btnLoad').click(function (event) {
+			fetch('tarea.json').then(function (response) {
+				console.log(response.url);
+				console.log(response.status);
+				console.log(response.statusText);
+				return response.json();
+			}).then(function (data) {
+				$('main').empty();
+				$('main').append(`
+						<div class="container">
+							<h1>JSON Products</h1>
+							<ul id="jp">
+							</ul>
+						</div>
+					</div>
+				`);
+				for (let p of data[0]) {
+					$('#jp').append(`
+						<li>${p.serialNumber} - ${p.name} - ${p.description} - ${p.price}€ - ${p.tax} -
+					`);
+
+					if(p.director !== undefined) {
+						$('#jp').append(`
+							${p.title} - ${p.director} - ${p.year}</li>
+						`);
+					}
+					if(p.company !== undefined) {
+						$('#jp').append(`
+							${p.title} - ${p.company} - ${p.size} - ${p.year}</li>
+						`);
+					}
+					if(p.author !== undefined) {
+						$('#jp').append(`
+							${p.title} - ${p.author} - ${p.pages}pages - ${p.year}</li>
+						`);
+					}
+				}
+				$('main').append(`
+						<div class="container">
+							<h1>JSON Categories</h1>
+							<ul id="jc">
+							</ul>
+						</div>
+					</div>
+				`);
+				for (let c of data[1]) {
+					$('#jc').append(`
+						<li>${c.title} - ${c.description} - ${c.url}</li>
+					`);
+				}
+				$('main').append(`
+						<div class="container">
+							<h1>JSON Stores</h1>
+							<ul id="js">
+							</ul>
+						</div>
+					</div>
+				`);
+				for (let s of data[2]) {
+					$('#js').append(`
+						<li>${s.cif} - ${s.name} - ${s.address} - ${s.phone}</li>
+					`);
+				}
+			}).catch(function (error) {
+				console.log("2");
+				console.log(error.menssage);
+			})
 		});
-		/*console.log($('#bodyJson'));
-		$(document).ready(function () {
-      this.main.load('json.html');
-    });*/
 	}
 }
 

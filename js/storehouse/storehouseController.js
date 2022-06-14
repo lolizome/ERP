@@ -11,9 +11,9 @@ import {Product, Movie, Game, Book, Coords, Store, Category} from './storehouseM
 import {StoreHouseException, ObjecStoreHouseException} from './storehouseModel.js';
 
 class StoreHouseController {
-	#jsonP = "";
-	#jsonS = "";
-	#jsonC = "";
+	#arP2 = [];
+	#arC2 = [];
+	#arS2 = [];
 	#modelStoreHouse;
 	#viewStoreHouse;
 	#loadStoreHouseObjects() {
@@ -78,65 +78,6 @@ class StoreHouseController {
 		sh.addProductInShop(g5, s3, 15);
 		sh.addProductInShop(b4, s2, 12);
 		sh.addProductInShop(b5, s2, 10);
-
-
-		let arP = [m1, m2, m3, m4, m5, g1, g2, g3, g4, g5, b1, b2, b3, b4, b5];
-		let arS = [s0, s1, s2, s3, s4];
-		let arC = [cat1, cat2, cat3];
-		let arP2 = [];
-		let arS2 = [];
-		let arC2 = [];
-		let cont = 0;
-
-		for (let p of arP) {
-			arP2.push({
-				serialNumber: p.serialNumber,
-				name: p.name,
-				description: p.description,
-				price: p.price,
-				tax: p.tax
-			});
-
-			if(p instanceof Movie) {
-				arP2[cont].title = p.title;
-				arP2[cont].director = p.director;
-				arP2[cont].year = p.year;
-			}
-			if(p instanceof Game) {
-				arP2[cont].title = p.title;
-				arP2[cont].company = p.company;
-				arP2[cont].size = p.size;
-				arP2[cont].year = p.year;
-			}
-			if(p instanceof Book) {
-				arP2[cont].title = p.title;
-				arP2[cont].author = p.author;
-				arP2[cont].pages = p.pages;
-				arP2[cont].year = p.year;
-			}
-
-			cont++;
-		}
-		this.jsonP = JSON.stringify(arP2);
-
-		for (let s of arS) {
-			arS2.push({
-				cif: s.cif,
-				name: s.name,
-				address: s.address,
-				phone: s.phone
-			});
-		}
-		this.jsonS = JSON.stringify(arS2);
-
-		for (let c of arC) {
-			arC2.push({
-				title: c.title,
-				description: c.description,
-				url: c.url
-			});
-		}
-		this.jsonC = JSON.stringify(arC2);
 	}
 
 	constructor(modelStoreHouse, viewStoreHouse) {
@@ -165,6 +106,8 @@ class StoreHouseController {
 		);
 		this.#viewStoreHouse.checkCookie('username');
 		this.#viewStoreHouse.showNewLoginForm();
+		this.#viewStoreHouse.createJSONFile();
+		this.#viewStoreHouse.bindAdminBackup(this.#modelStoreHouse.products, this.#modelStoreHouse.categories, this.#modelStoreHouse.stores);
 	}
 
 	onInit = () => {
@@ -172,7 +115,6 @@ class StoreHouseController {
 		this.#viewStoreHouse.bindProductsStoreList(
 			this.handleProductsStoreList
 		);
-		this.#viewStoreHouse.createJSONFile(this.jsonP, this.jsonS, this.jsonC);
 	}
 
 	onAddStore = () => {
@@ -271,7 +213,7 @@ class StoreHouseController {
 			Book: Book,
 		};
 		let done, error, pro;
-		console.log("0.5");
+
 		try{
 			pro = new instance[type](serial, name, desc, price, tax, url);
 			this.#modelStoreHouse.addProduct(pro);
