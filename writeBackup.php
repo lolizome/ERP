@@ -1,12 +1,11 @@
 <?php
-	$fechaActual = date("d-m-Y");
-	//$JSONData = file_get_contents("php://input");
-	//$dataObject = json_decode($JSONData);
-	$data = $_POST['data'];
+	$fechaActual = date("d") . date("m") . date("Y") . date("H") . date("i") . date("s");
 
-	$file = fopen("./backup/archivo" . $fechaActual . ".txt", "a");
+	$JSONData = file_get_contents("php://input");
 
-	fputs($file, $data);
+	$file = fopen("./backup/backup_" . $fechaActual . ".txt", "a");
+
+	fputs($file, $JSONData);
 
 	fclose($file);
 ?>

@@ -470,18 +470,13 @@ class StoreHouseView {
 
 		for (let product of products) {
 			container.children().nextAll('div').append(`<div class="col mb-5">
-				<figure class="card h-100  ${product.constructor.name}-css">
-					<figcaption class="info-wrap">
-						<div class="sto-list-image">
-							<img class="card-img-top images" src="${product.images}" alt="${product.title}" />
-						</div>
-					</figcaption>
+				<figure class="card h-100  ${product[0].constructor.name}-css">
 						<div id="etiqueta" class="card-body p-4">
 							<div class="text-center">
-								<h6 class="fw-bolder">${product.title}</h6>
+								<h6 class="fw-bolder">${product[0].title}</h6>
 								<div class="bottom-wrap">
 									<div class="cart mt-4 align-items-center">
-										<div><button class="btn btn-primary" data-category="${category.title}" type='button'>Eliminar</button></div>
+										<div><button class="btn btn-primary" data-category="${product[0].title}" type='button'>Eliminar</button></div>
 									</div>
 								</div>
 							</div>
@@ -495,7 +490,7 @@ class StoreHouseView {
 	}
 
 	// Modal de eliminación de productos
-	showRemoveProductModal(done, cat, position, error) {
+	showRemoveProductModal(done, pro, position, error) {
 		$('remove-category').find('div.error').remove();
 		if (done){
 			let modal = $(`<div class="modal fade" id="removeCategoryModal" tabindex="-1"
@@ -509,7 +504,7 @@ class StoreHouseView {
 							</button>
 						</div>
 						<div class="modal-body">
-							La categoría <strong>${cat.title}</strong> ha sido eliminada correctamente.
+							La categoría <strong>${pro.title}</strong> ha sido eliminada correctamente.
 						</div>
 						<div class="modal-footer">
 							<button type="button" class="btn btn-primary" data-dismiss="modal">Aceptar</button>
@@ -531,7 +526,7 @@ class StoreHouseView {
 		} else {
 			$('#removeCategoryModal').prepend(`
 				<div class="error text-danger p-3">
-					<i class="fas fa-exclamation-triangle"></i> La categoría <strong>${cat.title}</strong> no exite en el almacén.
+					<i class="fas fa-exclamation-triangle"></i> La categoría <strong>${pro.title}</strong> no exite en el almacén.
 				</div>
 			`);
 		}
@@ -1214,17 +1209,14 @@ listProductsStores(products, name, coords) {
 				});
 			}
 			general.push(arS);
-			//let fd = new FormData();
-			//fd.append('data', JSON.stringify(general));
+
 			let data = JSON.stringify(general);
 
-			fetch("writeBackup.php", {
-				method: "post",
-				body: data
-			}).then(function(response) {
-				return response.text();
-			}).catch(function(error) {
-				console.log(error.message);
+			$.ajax({
+				type: "post",
+				url: "writeBackup.php",
+				dataType: "json",
+				data: data
 			});
 		});
 	}
@@ -1289,7 +1281,7 @@ listProductsStores(products, name, coords) {
 		this.setCookie('pwd', pwd, 0);
 	}
 
-	createJSONFile() {
+	bindShowJSONFile() {
 		let bLoad = $(`<div id="btnLoad"><button class="btn btn-primary">Cargar HTML 1</button></div>`);
 		$('#head').append(bLoad);
 
@@ -1300,8 +1292,8 @@ listProductsStores(products, name, coords) {
 				console.log(response.statusText);
 				return response.json();
 			}).then(function (data) {
-				$('main').empty();
-				$('main').append(`
+				this.main.empty();
+				this.main.append(`
 						<div class="container">
 							<h1>Product List</h1>
 							<ul id="jp">
@@ -1309,6 +1301,7 @@ listProductsStores(products, name, coords) {
 						</div>
 					</div>
 				`);
+
 				for (let p of data[0]) {
 					$('#jp').append(`
 						<li>${p.serialNumber} - ${p.name} - ${p.description} - ${p.price}€ - ${p.tax} -
@@ -1330,7 +1323,7 @@ listProductsStores(products, name, coords) {
 						`);
 					}
 				}
-				$('main').append(`
+				this.main.append(`
 						<div class="container">
 							<h1>Category List</h1>
 							<ul id="jc">
@@ -1343,7 +1336,7 @@ listProductsStores(products, name, coords) {
 						<li>${c.title} - ${c.description} - ${c.url}</li>
 					`);
 				}
-				$('main').append(`
+				this.main.append(`
 						<div class="container">
 							<h1>Store List</h1>
 							<ul id="js">
@@ -1357,7 +1350,6 @@ listProductsStores(products, name, coords) {
 					`);
 				}
 			}).catch(function (error) {
-				console.log("2");
 				console.log(error.menssage);
 			})
 		});

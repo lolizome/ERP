@@ -95,6 +95,7 @@ class StoreHouseController {
 		this.onAddStore();
 		this.onAddCategory();
 		this.onAddMap();
+		this.onAddFileJSON();
 		this.#viewStoreHouse.showAdminInMenu();
 		this.#viewStoreHouse.bindAdminMenu(
 			this.handleNewProductForm,
@@ -106,7 +107,6 @@ class StoreHouseController {
 		);
 		this.#viewStoreHouse.checkCookie('username');
 		this.#viewStoreHouse.showNewLoginForm();
-		this.#viewStoreHouse.createJSONFile();
 		this.#viewStoreHouse.bindAdminBackup(this.#modelStoreHouse.products, this.#modelStoreHouse.categories, this.#modelStoreHouse.stores);
 	}
 
@@ -134,6 +134,11 @@ class StoreHouseController {
 	onAddMap = () => {
 		this.#viewStoreHouse.showMapStores();
 		this.#viewStoreHouse.bindMapStores(this.#modelStoreHouse.stores);
+	}
+
+	onAddFileJSON = () => {
+		this.handleUpFileJSON();
+		this.#viewStoreHouse.bindShowJSONFile();
 	}
 
 	handleInit = () => {
@@ -266,17 +271,18 @@ class StoreHouseController {
 		this.#viewStoreHouse.bindRemoveProductForm(this.handleRemoveProduct);
 	}
 
-	handleRemoveProduct = (title, position) => {
-		let done, error, cat;
+	handleRemoveProduct = (serialNumber, position) => {
+		let done, error, pro;
 		try{
-			cat = this.#modelStoreHouse.getCategory(title);
-			this.#modelStoreHouse.removeCategory(cat);
+			pro = this.#modelStoreHouse.getProduct(serialNumber);
+			this.#modelStoreHouse.removeProduct(pro);
+
 			done = true;
 		} catch(exception){
 			done = false;
 			error = exception;
 		}
-		this.#viewStoreHouse.showRemoveProductModal(done, cat, position, error);
+		this.#viewStoreHouse.showRemoveProductModal(done, pro, position, error);
 	}
 
 	handleRemoveCategoryForm = () => {
@@ -315,6 +321,73 @@ class StoreHouseController {
 			error = exception;
 		}
 		this.#viewStoreHouse.showRemoveStoreModal(done, sto, position, error);
+	}
+
+	handleUpFileJSON = () => {
+		let cont = 0;
+		let arP = [];
+		let arC = [];
+		let arS = [];
+		let general = [];
+
+		for (let p of this.#modelStoreHouse.products) {
+			arP.push({
+				serialNumber: p[0].serialNumber,
+				name: p[0].name,
+				description: p[0].description,
+				price: p[0].price,
+				tax: p[0].tax
+			});
+
+			if(p[0].constructor.name === "Movie") {
+				arP[cont].title = p[0].title;
+				arP[cont].director = p[0].director;
+				arP[cont].year = p[0].year;
+			}
+			if(p[0].constructor.name === "Game") {
+				arP[cont].title = p[0].title;
+				arP[cont].company = p[0].company;
+				arP[cont].size = p[0].size;
+				arP[cont].year = p[0].year;
+			}
+			if(p[0].constructor.name === "Book") {
+				arP[cont].title = p[0].title;
+				arP[cont].author = p[0].author;
+				arP[cont].pages = p[0].pages;
+				arP[cont].year = p[0].year;
+			}
+
+			cont++;
+		}
+		general.push(arP);
+
+		for (let c of this.#modelStoreHouse.categories) {
+			arC.push({
+				title: c[1].title,
+				description: c[1].description,
+				url: c[1].url
+			});
+		}
+		general.push(arC);
+
+		for (let s of this.#modelStoreHouse.stores) {
+			arS.push({
+				cif: s[0].cif,
+				name: s[0].name,
+				address: s[0].address,
+				phone: s[0].phone
+			});
+		}
+		general.push(arS);
+
+		let data = JSON.stringify(general);
+
+		$.ajax({
+			type: "post",
+			url: "subirFile.php",
+			dataType: "json",
+			data: data
+		});
 	}
 }
 
