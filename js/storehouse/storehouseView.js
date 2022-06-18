@@ -470,18 +470,13 @@ class StoreHouseView {
 
 		for (let product of products) {
 			container.children().nextAll('div').append(`<div class="col mb-5">
-				<figure class="card h-100  ${product.constructor.name}-css">
-					<figcaption class="info-wrap">
-						<div class="sto-list-image">
-							<img class="card-img-top images" src="${product.images}" alt="${product.title}" />
-						</div>
-					</figcaption>
+				<figure class="card h-100  ${product[0].constructor.name}-css">
 						<div id="etiqueta" class="card-body p-4">
 							<div class="text-center">
-								<h6 class="fw-bolder">${product.title}</h6>
+								<h6 class="fw-bolder">${product[0].title}</h6>
 								<div class="bottom-wrap">
 									<div class="cart mt-4 align-items-center">
-										<div><button class="btn btn-primary" data-category="${category.title}" type='button'>Eliminar</button></div>
+										<div><button class="btn btn-primary" data-category="${product[0].title}" type='button'>Eliminar</button></div>
 									</div>
 								</div>
 							</div>
@@ -495,7 +490,7 @@ class StoreHouseView {
 	}
 
 	// Modal de eliminación de productos
-	showRemoveProductModal(done, cat, position, error) {
+	showRemoveProductModal(done, pro, position, error) {
 		$('remove-category').find('div.error').remove();
 		if (done){
 			let modal = $(`<div class="modal fade" id="removeCategoryModal" tabindex="-1"
@@ -509,7 +504,7 @@ class StoreHouseView {
 							</button>
 						</div>
 						<div class="modal-body">
-							La categoría <strong>${cat.title}</strong> ha sido eliminada correctamente.
+							La categoría <strong>${pro.title}</strong> ha sido eliminada correctamente.
 						</div>
 						<div class="modal-footer">
 							<button type="button" class="btn btn-primary" data-dismiss="modal">Aceptar</button>
@@ -531,7 +526,7 @@ class StoreHouseView {
 		} else {
 			$('#removeCategoryModal').prepend(`
 				<div class="error text-danger p-3">
-					<i class="fas fa-exclamation-triangle"></i> La categoría <strong>${cat.title}</strong> no exite en el almacén.
+					<i class="fas fa-exclamation-triangle"></i> La categoría <strong>${pro.title}</strong> no exite en el almacén.
 				</div>
 			`);
 		}
@@ -1171,7 +1166,8 @@ listProductsStores(products, name, coords) {
 					name: p[0].name,
 					description: p[0].description,
 					price: p[0].price,
-					tax: p[0].tax
+					tax: p[0].tax,
+					images: p[0].images
 				});
 
 				if(p[0].constructor.name === "Movie") {
@@ -1210,21 +1206,20 @@ listProductsStores(products, name, coords) {
 					cif: s[0].cif,
 					name: s[0].name,
 					address: s[0].address,
-					phone: s[0].phone
+					phone: s[0].phone,
+					latitude: s[0].coords.latitude,
+					longitude: s[0].coords.longitude
 				});
 			}
 			general.push(arS);
-			//let fd = new FormData();
-			//fd.append('data', JSON.stringify(general));
+
 			let data = JSON.stringify(general);
 
-			fetch("writeBackup.php", {
-				method: "post",
-				body: data
-			}).then(function(response) {
-				return response.text();
-			}).catch(function(error) {
-				console.log(error.message);
+			$.ajax({
+				type: "post",
+				url: "writeBackup.php",
+				dataType: "json",
+				data: data
 			});
 		});
 	}
@@ -1287,80 +1282,6 @@ listProductsStores(products, name, coords) {
 
 	removeCookie() {
 		this.setCookie('pwd', pwd, 0);
-	}
-
-	createJSONFile() {
-		let bLoad = $(`<div id="btnLoad"><button class="btn btn-primary">Cargar HTML 1</button></div>`);
-		$('#head').append(bLoad);
-
-		$('#btnLoad').click(function (event) {
-			fetch('tarea.json').then(function (response) {
-				console.log(response.url);
-				console.log(response.status);
-				console.log(response.statusText);
-				return response.json();
-			}).then(function (data) {
-				$('main').empty();
-				$('main').append(`
-						<div class="container">
-							<h1>Product List</h1>
-							<ul id="jp">
-							</ul>
-						</div>
-					</div>
-				`);
-				for (let p of data[0]) {
-					$('#jp').append(`
-						<li>${p.serialNumber} - ${p.name} - ${p.description} - ${p.price}€ - ${p.tax} -
-					`);
-
-					if(p.director !== undefined) {
-						$('#jp').append(`
-							${p.title} - ${p.director} - ${p.year}</li>
-						`);
-					}
-					if(p.company !== undefined) {
-						$('#jp').append(`
-							${p.title} - ${p.company} - ${p.size} - ${p.year}</li>
-						`);
-					}
-					if(p.author !== undefined) {
-						$('#jp').append(`
-							${p.title} - ${p.author} - ${p.pages}pages - ${p.year}</li>
-						`);
-					}
-				}
-				$('main').append(`
-						<div class="container">
-							<h1>Category List</h1>
-							<ul id="jc">
-							</ul>
-						</div>
-					</div>
-				`);
-				for (let c of data[1]) {
-					$('#jc').append(`
-						<li>${c.title} - ${c.description} - ${c.url}</li>
-					`);
-				}
-				$('main').append(`
-						<div class="container">
-							<h1>Store List</h1>
-							<ul id="js">
-							</ul>
-						</div>
-					</div>
-				`);
-				for (let s of data[2]) {
-					$('#js').append(`
-						<li>${s.cif} - ${s.name} - ${s.address} - ${s.phone}</li>
-					`);
-				}
-			}).catch(function (error) {
-				console.log("2");
-				console.log(error.menssage);
-			})
-		});
 	}
 }
 

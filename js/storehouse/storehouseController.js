@@ -11,103 +11,117 @@ import {Product, Movie, Game, Book, Coords, Store, Category} from './storehouseM
 import {StoreHouseException, ObjecStoreHouseException} from './storehouseModel.js';
 
 class StoreHouseController {
-	#arP2 = [];
-	#arC2 = [];
-	#arS2 = [];
 	#modelStoreHouse;
 	#viewStoreHouse;
+
 	#loadStoreHouseObjects() {
-		let m1 = new Movie('111-111-111', 'mov1', 'Descripción del producto', 10, 21, './js/images/m1.jpg', 'Sonic The Hedgehog', 'Jeff Fowler', 2020);
-		let m2 = new Movie('111-111-112', 'mov2', 'Descripción del producto', 12, 21, './js/images/m2.jpg', 'Sonic The Hedgehog 2', 'Jeff Fowler', 2022);
-		let m3 = new Movie('111-111-113', 'mov3', 'Descripción del producto', 13, 21, './js/images/m3.jpg', 'Avatar', 'James Cameron', 2009);
-		let m4 = new Movie('111-111-114', 'mov4', 'Descripción del producto', 20, 21, './js/images/m4.jpg', 'Bratz', 'Sean McNamaran', 2007);
-		let m5 = new Movie('111-111-115', 'mov5', 'Descripción del producto', 4, 21, './js/images/m5.jpg', 'Death Note Netflix', 'Adam Wingard', 2017);
-		let g1 = new Game('222-222-221', 'gam1', 'Descripción del producto', 100, 21, './js/images/g1.jpeg', 'Uncharted 1', 'Sony', '2GB', 2007);
-		let g2 = new Game('222-222-222', 'gam2', 'Descripción del producto', 102, 21, './js/images/g2.jpg', ' Uncharted 2', 'Sony', '1GB', 2009);
-		let g3 = new Game('222-222-223', 'gam3', 'Descripción del producto', 103, 21, './js/images/g3.jpg', 'Uncharted 3', 'Sony', '900MB', 2013);
-		let g4 = new Game('222-222-224', 'gam4', 'Descripción del producto', 200, 21, './js/images/g4.jpg', 'World of Warcraft', 'Blizzard', '2GB', 2004);
-		let g5 = new Game('222-222-225', 'gam5', 'Descripción del producto', 40, 21, './js/images/g5.jpg', 'Stardew Valley', 'Eric Barone', '1GB', 2016);
-		let b1 = new Book('333-333-331', 'boo1', 'Descripción del producto', 20, 21, './js/images/g1.jpeg', 'Harry Potter 1', 'J K Rowling', 450, 1997);
-		let b2 = new Book('333-333-332', 'boo2', 'Descripción del producto', 22, 21, './js/images/b2.jpg', 'Harry Potter 2', 'J K Rowling', 556, 1998);
-		let b3 = new Book('333-333-333', 'boo3', 'Descripción del producto', 23, 21, './js/images/b3.jpg', 'Harry Potter 3', 'J K Rowling', 400, 1999);
-		let b4 = new Book('333-333-334', 'boo4', 'Descripción del producto', 20, 21, './js/images/b4.jpg', 'Harry Potter 4', 'J K Rowling', 552, 2000);
-		let b5 = new Book('333-333-335', 'boo5', 'Descripción del producto', 2, 21, './js/images/b5.jpg', 'Harry Potter 5', 'J K Rowling', 359, 2003);
-		let s0 = new Store("O12345678", "La Tienda", "C/ Mercado 1", 123456789, { latitude: 38.9884, longitude: -3.928 });
-		let s1 = new Store("A12345678", "La gran Tienda", "C/ Pokémon 4", 123456789, { latitude: 52.48393, longitude: 113.545665 });
-		let s2 = new Store("B12345678", "Tu Tienda en Casa", "C/ Buen Mercado 14", 123456789, { latitude: 31.39483, longitude: 55.456464 });
-		let s3 = new Store("C12345678", "Tienda", "C/ Gatos 1", 123456789, { latitude: 42.4532980, longitude: 1.587348793 });
-		let s4 = new Store("D12345678", "tiendaD", "C/ Safari 1", 123456789, { latitude: 40, longitude: 22 });
-		let cat0 = new Category("Por defecto", "Categoría por defecto");
-		let cat1 = new Category("Peliculas", "Películas descarga online");
-		let cat2 = new Category("Juegos", "Juegos descarga online");
-		let cat3 = new Category("Libros", "eBooks");
-		let sh = this.#modelStoreHouse;
-		sh.addCategory(cat1);
-		sh.addCategory(cat2);
-		sh.addCategory(cat3);
-		sh.addShop(s0, s1, s2, s3, s4);
-		sh.addProduct(m1, cat1);
-		sh.addProduct(g1, cat1, cat2);
-		sh.addProduct(m2, cat1);
-		sh.addProduct(m3, cat1);
-		sh.addProduct(m4, cat1);
-		sh.addProduct(m5, cat1);
-		sh.addProduct(b1, cat1, cat3);
-		sh.addProduct(b2, cat1, cat3);
-		sh.addProduct(g2, cat1, cat2);
-		sh.addProduct(g3, cat2);
-		sh.addProduct(g4, cat2);
-		sh.addProduct(g5, cat2);
-		sh.addProduct(b3, cat1, cat3);
-		sh.addProduct(b4, cat3);
-		sh.addProduct(b5, cat3);
-		sh.addProductInShop(m2, s1, 14);
-		sh.addProductInShop(g2, s1, 2);
-		sh.addProductInShop(b1, s1, 12);
-		sh.addProductInShop(m1, s1, 4);
-		sh.addProductInShop(g1, s1, 2);
-		sh.addProductInShop(b2, s1, 12);
-		sh.addProductInShop(m3, s2, 3);
-		sh.addProductInShop(m4, s2, 1);
-		sh.addProductInShop(g2, s2, 10);
-		sh.addProductInShop(g3, s2, 5);
-		sh.addProductInShop(b2, s3, 5);
-		sh.addProductInShop(b3, s3, 15);
-		sh.addProductInShop(m5, s3, 5);
-		sh.addProductInShop(g4, s3, 5);
-		sh.addProductInShop(g5, s3, 15);
-		sh.addProductInShop(b4, s2, 12);
-		sh.addProductInShop(b5, s2, 10);
+		let sh  = this.#modelStoreHouse;
+		function modelSH() {
+			return sh;
+		}
+
+		return new Promise((resolve, reject) => {
+			fetch('tarea.json', {
+				method: 'get'
+			}).then(function(response) {
+				return response.json();
+			}).then(function(data) {
+				let sh = modelSH();
+				let arP = [];
+				let arC = [];
+				let arS = [];
+
+				for (let cat of data[1]) {
+					let category = new Category(cat.title, cat.description, cat.url);
+					arC.push(category);
+					sh.addCategory(category);
+				}
+				for (let pro of data[0]) {
+					let product, category;
+
+					if(pro.hasOwnProperty("director")) {
+						product = new Movie(pro.serialNumber, pro.name, pro.description, pro.price, pro.tax, pro.images, pro.title, pro.director, pro.year);
+						category = sh.getCategory("Peliculas");
+					}
+					if(pro.hasOwnProperty("company")) {
+						product = new Game(pro.serialNumber, pro.name, pro.description, pro.price, pro.tax, pro.images, pro.title, pro.company, pro.size, pro.year);
+						category = sh.getCategory("Juegos");
+					}
+					if(pro.hasOwnProperty("author")) {
+						product = new Book(pro.serialNumber, pro.name, pro.description, pro.price, pro.tax, pro.images, pro.title, pro.author, pro.pages, pro.year);
+						category = sh.getCategory("Libros");
+					}
+					arP.push(product);
+					sh.addProduct(product, category);
+				}
+				for (let sto of data[2]) {
+					let coord = new Coords(sto.latitude, sto.longitude);
+					let store = new Store(sto.cif, sto.name, sto.address, sto.phone, coord);
+					arS.push(store);
+					sh.addShop(store);
+				}
+
+				sh.addProductInShop(arP[0], arS[0], 14);
+				sh.addProductInShop(arP[1], arS[1], 2);
+				sh.addProductInShop(arP[2], arS[2], 12);
+				sh.addProductInShop(arP[3], arS[0], 4);
+				sh.addProductInShop(arP[4], arS[0], 2);
+				sh.addProductInShop(arP[5], arS[2], 12);
+				sh.addProductInShop(arP[6], arS[2], 3);
+				sh.addProductInShop(arP[7], arS[1], 1);
+				sh.addProductInShop(arP[8], arS[0], 10);
+				sh.addProductInShop(arP[9], arS[3], 5);
+				sh.addProductInShop(arP[10], arS[1], 5);
+				sh.addProductInShop(arP[11], arS[3], 15);
+				sh.addProductInShop(arP[12], arS[0], 5);
+				sh.addProductInShop(arP[13], arS[3], 5);
+				sh.addProductInShop(arP[14], arS[3], 15);
+				sh.addProductInShop(arP[4], arS[1], 15);
+				sh.addProductInShop(arP[3], arS[4], 15);
+
+				resolve(sh);
+			});
+		});
 	}
 
 	constructor(modelStoreHouse, viewStoreHouse) {
 		this.#modelStoreHouse = modelStoreHouse;
 		this.#viewStoreHouse = viewStoreHouse;
 
-		this.onLoad();
-		this.onInit();
-		this.#viewStoreHouse.bindInit(this.handleInit);
-		//this.#viewStoreHouse.bindProductsTypeList(this.handleProductsTypeList);
+		this.onAddFileJSON();
+		this.onLoad().then((sh) => {
+			this.onInit();
+			this.#viewStoreHouse.bindInit(this.handleInit);
+		});
 	}
 
 	onLoad = () => {
-		this.#loadStoreHouseObjects();
-		this.onAddStore();
-		this.onAddCategory();
-		this.onAddMap();
-		this.#viewStoreHouse.showAdminInMenu();
-		this.#viewStoreHouse.bindAdminMenu(
-			this.handleNewProductForm,
-			this.handleRemoveProductForm,
-			this.handleNewCategoryForm,
-			this.handleRemoveCategoryForm,
-			this.handleNewStoreForm,
-			this.handleRemoveStoreForm
-		);
-		this.#viewStoreHouse.checkCookie('username');
-		this.#viewStoreHouse.showNewLoginForm();
-		this.#viewStoreHouse.createJSONFile();
-		this.#viewStoreHouse.bindAdminBackup(this.#modelStoreHouse.products, this.#modelStoreHouse.categories, this.#modelStoreHouse.stores);
+		return new Promise((resolve, reject) => {
+			this.#loadStoreHouseObjects().then((sh) => {
+				this.onAddStore();
+				this.onAddCategory();
+				this.onAddMap();
+				this.#viewStoreHouse.showAdminInMenu();
+				this.#viewStoreHouse.bindAdminMenu(
+					this.handleNewProductForm,
+					this.handleRemoveProductForm,
+					this.handleNewCategoryForm,
+					this.handleRemoveCategoryForm,
+					this.handleNewStoreForm,
+					this.handleRemoveStoreForm
+				);
+				this.#viewStoreHouse.checkCookie('username');
+				this.#viewStoreHouse.showNewLoginForm();
+				this.#viewStoreHouse.bindAdminBackup(
+					this.#modelStoreHouse.products,
+					this.#modelStoreHouse.categories,
+					this.#modelStoreHouse.stores
+				);
+
+				resolve(sh);
+			});;
+		});;
+
 	}
 
 	onInit = () => {
@@ -134,6 +148,10 @@ class StoreHouseController {
 	onAddMap = () => {
 		this.#viewStoreHouse.showMapStores();
 		this.#viewStoreHouse.bindMapStores(this.#modelStoreHouse.stores);
+	}
+
+	onAddFileJSON = () => {
+		this.handleUpFileJSON();
 	}
 
 	handleInit = () => {
@@ -266,17 +284,18 @@ class StoreHouseController {
 		this.#viewStoreHouse.bindRemoveProductForm(this.handleRemoveProduct);
 	}
 
-	handleRemoveProduct = (title, position) => {
-		let done, error, cat;
+	handleRemoveProduct = (serialNumber, position) => {
+		let done, error, pro;
 		try{
-			cat = this.#modelStoreHouse.getCategory(title);
-			this.#modelStoreHouse.removeCategory(cat);
+			pro = this.#modelStoreHouse.getProduct(serialNumber);
+			this.#modelStoreHouse.removeProduct(pro);
+
 			done = true;
 		} catch(exception){
 			done = false;
 			error = exception;
 		}
-		this.#viewStoreHouse.showRemoveProductModal(done, cat, position, error);
+		this.#viewStoreHouse.showRemoveProductModal(done, pro, position, error);
 	}
 
 	handleRemoveCategoryForm = () => {
@@ -315,6 +334,315 @@ class StoreHouseController {
 			error = exception;
 		}
 		this.#viewStoreHouse.showRemoveStoreModal(done, sto, position, error);
+	}
+
+handleUpFileJSON = () => {
+	let general = [
+		[
+			{
+				"serialNumber": "111-111-111",
+				"name": "mov1",
+				"description": "Descripción del producto",
+				"price": 10,
+				"tax": 21,
+				"images": "./js/images/m1.jpg",
+				"title": "Sonic The Hedgehog",
+				"director": "Jeff Fowler",
+				"year": 2020
+			},
+			{
+				"serialNumber": "222-222-221",
+				"name": "gam1",
+				"description": "Descripción del producto",
+				"price": 100,
+				"tax": 21,
+				"images": "./js/images/g1.jpeg",
+				"title": "Uncharted 1",
+				"company": "Sony",
+				"size": "2GB",
+				"year": 2007
+			},
+			{
+				"serialNumber": "111-111-112",
+				"name": "mov2",
+				"description": "Descripción del producto",
+				"price": 12,
+				"tax": 21,
+				"images": "./js/images/m2.jpg",
+				"title": "Sonic The Hedgehog 2",
+				"director": "Jeff Fowler",
+				"year": 2022
+			},
+			{
+				"serialNumber": "111-111-113",
+				"name": "mov3",
+				"description": "Descripción del producto",
+				"price": 13,
+				"tax": 21,
+				"images": "./js/images/m3.jpg",
+				"title": "Avatar",
+				"director": "James Cameron",
+				"year": 2009
+			},
+			{
+				"serialNumber": "111-111-114",
+				"name": "mov4",
+				"description": "Descripción del producto",
+				"price": 20,
+				"tax": 21,
+				"images": "./js/images/m4.jpg",
+				"title": "Bratz",
+				"director": "Sean McNamaran",
+				"year": 2007
+			},
+			{
+				"serialNumber": "111-111-115",
+				"name": "mov5",
+				"description": "Descripción del producto",
+				"price": 4,
+				"tax": 21,
+				"images": "./js/images/m5.jpg",
+				"title": "Death Note Netflix",
+				"director": "Adam Wingard",
+				"year": 2017
+			},
+			{
+				"serialNumber": "333-333-331",
+				"name": "boo1",
+				"description": "Descripción del producto",
+				"price": 20,
+				"tax": 21,
+				"images": "./js/images/g1.jpeg",
+				"title": "Harry Potter 1",
+				"author": "J K Rowling",
+				"pages": 450,
+				"year": 1997
+			},
+			{
+				"serialNumber": "333-333-332",
+				"name": "boo2",
+				"description": "Descripción del producto",
+				"price": 22,
+				"tax": 21,
+				"images": "./js/images/b2.jpg",
+				"title": "Harry Potter 2",
+				"author": "J K Rowling",
+				"pages": 556,
+				"year": 1998
+			},
+			{
+				"serialNumber": "222-222-222",
+				"name": "gam2",
+				"description": "Descripción del producto",
+				"price": 102,
+				"tax": 21,
+				"images": "./js/images/g2.jpg",
+				"title": " Uncharted 2",
+				"company": "Sony",
+				"size": "1GB",
+				"year": 2009
+			},
+			{
+				"serialNumber": "222-222-223",
+				"name": "gam3",
+				"description": "Descripción del producto",
+				"price": 103,
+				"tax": 21,
+				"images": "./js/images/g3.jpg",
+				"title": "Uncharted 3",
+				"company": "Sony",
+				"size": "900MB",
+				"year": 2013
+			},
+			{
+				"serialNumber": "222-222-224",
+				"name": "gam4",
+				"description": "Descripción del producto",
+				"price": 200,
+				"tax": 21,
+				"images": "./js/images/g4.jpg",
+				"title": "World of Warcraft",
+				"company": "Blizzard",
+				"size": "2GB",
+				"year": 2004
+			},
+			{
+				"serialNumber": "222-222-225",
+				"name": "gam5",
+				"description": "Descripción del producto",
+				"price": 40,
+				"tax": 21,
+				"images": "./js/images/g5.jpg",
+				"title": "Stardew Valley",
+				"company": "Eric Barone",
+				"size": "1GB",
+				"year": 2016
+			},
+			{
+				"serialNumber": "333-333-333",
+				"name": "boo3",
+				"description": "Descripción del producto",
+				"price": 23,
+				"tax": 21,
+				"images": "./js/images/b3.jpg",
+				"title": "Harry Potter 3",
+				"author": "J K Rowling",
+				"pages": 400,
+				"year": 1999
+			},
+			{
+				"serialNumber": "333-333-334",
+				"name": "boo4",
+				"description": "Descripción del producto",
+				"price": 20,
+				"tax": 21,
+				"images": "./js/images/b4.jpg",
+				"title": "Harry Potter 4",
+				"author": "J K Rowling",
+				"pages": 552,
+				"year": 2000
+			},
+			{
+				"serialNumber": "333-333-335",
+				"name": "boo5",
+				"description": "Descripción del producto",
+				"price": 2,
+				"tax": 21,
+				"images": "./js/images/b5.jpg",
+				"title": "Harry Potter 5",
+				"author": "J K Rowling",
+				"pages": 359,
+				"year": 2003
+			}
+		],
+		[
+			{
+				"title": "Peliculas",
+				"description": "Películas descarga online",
+				"url": "Peliculas"
+			},
+			{
+				"title": "Juegos",
+				"description": "Juegos descarga online",
+				"url": "Juegos"
+			},
+			{
+				"title": "Libros",
+				"description": "eBooks",
+				"url": "Libros"
+			}
+		],
+		[
+			{
+				"cif": "O12345678",
+				"name": "La Tienda",
+				"address": "C/ Mercado 1",
+				"phone": 123456789,
+				"latitude": 38.9884,
+				"longitude": -3.928
+			},
+			{
+				"cif": "A12345678",
+				"name": "La gran Tienda",
+				"address": "C/ Pokémon 4",
+				"phone": 123456789,
+				"latitude": 52.48393,
+				"longitude": 113.545665
+			},
+			{
+				"cif": "B12345678",
+				"name": "Tu Tienda en Casa",
+				"address": "C/ Buen Mercado 14",
+				"phone": 123456789,
+				"latitude": 31.39483,
+				"longitude": 55.456464
+			},
+			{
+				"cif": "C12345678",
+				"name": "Tienda",
+				"address": "C/ Gatos 1",
+				"phone": 123456789,
+				"latitude": 42.453298,
+				"longitude": 1.587348793
+			},
+			{
+				"cif": "D12345678",
+				"name": "tiendaD",
+				"address": "C/ Safari 1",
+				"phone": 123456789,
+				"latitude": 40,
+				"longitude": 22
+			}
+		]
+	];
+
+		/*let cont = 0;
+		let arP = [];
+		let arC = [];
+		let arS = [];
+		let general = [];
+
+		for (let p of this.#modelStoreHouse.products) {
+			arP.push({
+				serialNumber: p[0].serialNumber,
+				name: p[0].name,
+				description: p[0].description,
+				price: p[0].price,
+				tax: p[0].tax,
+				images: p[0].images
+			});
+
+			if(p[0].constructor.name === "Movie") {
+				arP[cont].title = p[0].title;
+				arP[cont].director = p[0].director;
+				arP[cont].year = p[0].year;
+			}
+			if(p[0].constructor.name === "Game") {
+				arP[cont].title = p[0].title;
+				arP[cont].company = p[0].company;
+				arP[cont].size = p[0].size;
+				arP[cont].year = p[0].year;
+			}
+			if(p[0].constructor.name === "Book") {
+				arP[cont].title = p[0].title;
+				arP[cont].author = p[0].author;
+				arP[cont].pages = p[0].pages;
+				arP[cont].year = p[0].year;
+			}
+
+			cont++;
+		}
+		general.push(arP);
+
+		for (let c of this.#modelStoreHouse.categories) {
+			arC.push({
+				title: c[1].title,
+				description: c[1].description,
+				url: c[1].url
+			});
+		}
+		general.push(arC);
+
+		for (let s of this.#modelStoreHouse.stores) {
+			arS.push({
+				cif: s[0].cif,
+				name: s[0].name,
+				address: s[0].address,
+				phone: s[0].phone,
+				latitude: s[0].coords.latitude,
+				longitude: s[0].coords.longitude
+			});
+		}
+		general.push(arS);*/
+
+		let data = JSON.stringify(general);
+
+		$.ajax({
+			type: "post",
+			url: "subirFile.php",
+			dataType: "json",
+			data: data
+		});
 	}
 }
 
